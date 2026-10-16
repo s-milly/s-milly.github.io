@@ -13,6 +13,7 @@
   const suit = scene.querySelector(".plate--suit");
   const golf = scene.querySelector(".plate--golf");
   const scrim = scene.querySelector(".scrim");
+  const golfScrim = scene.querySelector(".scrim--golf");
   const net = scene.querySelector(".net");
   const panels = [...scene.querySelectorAll("[data-panel]")].map(el => ({
     el, k: el.dataset.panel.split(",").map(Number), on: el.classList.contains("panel--intro")
@@ -116,7 +117,8 @@
     field.style.opacity = lerp(0.02, 1, seg(p, 0.41, 0.45));
     const g = seg(p, 0.76, 0.88);
     golf.style.clipPath = `inset(${(1 - g) * 100}% 0 0 0)`;
-    scrim.style.opacity = bleed;
+    scrim.style.opacity = bleed * (1 - g);
+    golfScrim.style.opacity = g;
 
     const netAlpha = seg(p, 0.13, 0.22) * (1 - seg(p, 0.42, 0.5));
     net.style.opacity = netAlpha * (phone.matches ? 0.55 : 1);
