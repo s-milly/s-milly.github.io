@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shawn Miller</title>
+  <meta name="description" content="Shawn Miller: computer science student (AI/ML concentration) and student-athlete at PennWest Clarion University. Projects, background, and contact.">
+  <meta property="og:title" content="Shawn Miller">
+  <meta property="og:description" content="Computer Science · AI/ML · Student-Athlete">
+  <meta property="og:image" content="https://s-milly.github.io/assets/og.jpg">
+  <meta property="og:url" content="https://s-milly.github.io/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0A0E14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/suit.webp">
+  <link rel="stylesheet" href="site.css">
+</head>
+<body>
+  <a class="skip" href="#projects">Skip to projects</a>
+
+  <header class="nav" id="nav">
+    <a class="nav__name" href="#top">Shawn Miller</a>
+    <nav aria-label="Primary">
+      <a href="#experience" class="nav__exp">Experience</a>
+      <a href="#projects">Projects</a>
+      <a href="#contact">Contact</a>
+      <a href="#contact" class="nav__resume" data-resume-link>Résumé</a>
+    </nav>
+  </header>
+
+  <main id="top">
+    <!-- One continuous scene: intro, student, baseball, golf -->
+    <section class="scene" id="about" aria-label="About Shawn">
+      <div class="stage">
+        <canvas class="net" aria-hidden="true"></canvas>
+
+        <div class="window" aria-hidden="true">
+          <div class="plate plate--field">
+            <picture>
+              <source media="(max-width: 760px)" srcset="assets/field-m.webp">
+              <img class="ph ph--color" src="assets/field.webp" alt="" decoding="async">
+            </picture>
+          </div>
+          <div class="plate plate--suit">
+            <img class="ph" src="assets/suit.webp" alt="" decoding="async">
+          </div>
+          <div class="plate plate--golf">
+            <picture>
+              <source media="(max-width: 760px)" srcset="assets/golf-m.webp">
+              <img class="ph" src="assets/golf.webp" alt="" loading="lazy" decoding="async">
+            </picture>
+          </div>
+          <div class="scrim"></div>
+        </div>
+
+        <div class="panel panel--intro" data-panel="0,0,0.11,0.17">
+          <h1>Shawn<br>Miller</h1>
+          <p class="role">Computer Science · AI/ML · Student-Athlete</p>
+          <p class="lede">I study computer science with a concentration in AI and machine learning at PennWest Clarion University, pitch for the Golden Eagles, and work as a peer mentor.</p>
+          <div class="actions">
+            <a class="btn btn--solid" href="#projects">View projects</a>
+            <a class="btn" href="#contact">Get in touch</a>
+          </div>
+        </div>
+
+        <div class="panel" data-panel="0.18,0.25,0.38,0.44">
+          <h2>Computer science, focused on AI and machine learning.</h2>
+          <p>I'm a CS major at PennWest Clarion University with a concentration in artificial intelligence and machine learning. I'm drawn to the point where models meet real problems, and I'm building that experience one project at a time.</p>
+          <dl class="facts">
+            <div><dt>Major</dt><dd>Computer Science</dd></div>
+            <div><dt>Concentration</dt><dd>AI &amp; Machine Learning</dd></div>
+            <div><dt>On campus</dt><dd>Peer Mentor</dd></div>
+          </dl>
+        </div>
+
+        <div class="panel panel--on-photo" data-panel="0.54,0.6,0.73,0.77">
+          <h2>On the mound for Clarion.</h2>
+          <p>I'm a pitcher on the PennWest Clarion baseball team. Balancing a college season with a full course load has taught me to prepare, manage my time, and stay composed when it counts.</p>
+        </div>
+
+        <div class="panel panel--on-photo panel--golf" data-panel="0.84,0.9,2,2">
+          <h2>Off the field.</h2>
+          <p>Away from class and baseball, you'll usually find me on a golf course with friends. Same lesson as pitching: stay patient and focus on the next shot.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="experience" id="experience" aria-labelledby="experience-title">
+      <h2 id="experience-title">Experience</h2>
+      <!-- Newest first. Copy an <li> to add a role; add <ul class="tl__points"><li>…</li></ul> for details. -->
+      <ol class="tl" role="list">
+        <li class="tl__item is-current">
+          <div class="tl__when"><time datetime="2026-08">Aug 2026</time> – Present</div>
+          <div class="tl__body">
+            <h3>Student Facility Attendant</h3>
+            <p class="tl__org">Pennsylvania Western University Recreation Center</p>
+            <p class="tl__meta">Clarion, Pennsylvania · On-site</p>
+            <p class="tl__summary">Supervise facility operations and enforce safety policies for <strong>100+ students and members</strong> daily.</p>
+          </div>
+        </li>
+        <li class="tl__item">
+          <div class="tl__when"><time datetime="2026-05">May 2026</time> – <time datetime="2026-08">Aug 2026</time><span>4 mos</span></div>
+          <div class="tl__body">
+            <h3>AI Engineer Intern</h3>
+            <p class="tl__org">Atlas Digital Group · Internship</p>
+            <p class="tl__meta">Philadelphia, Pennsylvania · Remote</p>
+            <p class="tl__summary">Built an AI-powered intelligence platform integrating <strong>8 data sources</strong>, replacing <strong>20+ manual tools and spreadsheets</strong> with a single unified pipeline.</p>
+            <button class="tl__toggle" type="button" aria-expanded="false" aria-controls="tl-atlas">Show details</button>
+            <div class="tl__more" id="tl-atlas">
+              <ul class="tl__points">
+                <li>Integrated HubSpot, LinkedIn, Google Business, LeadMagic, FCC Broadband, Anthropic Web Search, Instantly, and Google Analytics 4 into one pipeline.</li>
+                <li>Engineered automated ETL workflows processing data for <strong>3,000+ operators</strong>, <strong>25,000+ people</strong>, and <strong>20,000+ follower snapshots</strong> on hourly, daily, and weekly schedules, eliminating <strong>10+ hours/week</strong> of manual data entry.</li>
+                <li>Developed AI-driven enrichment and content generation features automating executive research, news monitoring, and LinkedIn post drafting, cutting manual prospect research time by roughly <strong>80%</strong>.</li>
+                <li>Designed dashboard and CRM integrations combining marketing, sales, broadband coverage, and competitive intelligence into a single source of truth, enabling the business development team to identify <strong>200+ high-priority operators</strong> for outreach.</li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li class="tl__item">
+          <div class="tl__when"><time datetime="2019-04">Apr 2019</time> – <time datetime="2023-08">Aug 2023</time><span>4 yrs 5 mos</span></div>
+          <div class="tl__body">
+            <h3>Owner</h3>
+            <p class="tl__org">Lawn Care Business · Self-employed</p>
+            <p class="tl__meta">Bridgeville, Pennsylvania · On-site</p>
+            <p class="tl__summary">Owned and operated a lawn care business serving <strong>30+ clients a week</strong>, managing employee scheduling and customer relationships.</p>
+            <button class="tl__toggle" type="button" aria-expanded="false" aria-controls="tl-lawn">Show details</button>
+            <div class="tl__more" id="tl-lawn">
+              <ul class="tl__points">
+                <li>Managed end-to-end operations including pricing, budgeting, equipment maintenance, and route optimization.</li>
+                <li>Provided one complimentary lawn care service each month to support a local community member in need.</li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <section class="projects" id="projects" aria-labelledby="projects-title">
+      <div class="projects__head">
+        <h2 id="projects-title">Projects</h2>
+        <p>Pick one and I'll throw it a strike. Every project opens on GitHub.</p>
+      </div>
+      <ul class="grid" id="grid" role="list"></ul>
+    </section>
+
+    <section class="contact" id="contact" aria-labelledby="contact-title">
+      <h2 id="contact-title">Let's talk.</h2>
+      <p>Open to internships and opportunities in software engineering, AI/ML, and analytics.</p>
+      <div class="actions">
+        <a class="btn btn--solid" href="mailto:shawnmiller2023@gmail.com">shawnmiller2023@gmail.com</a>
+        <a class="btn" href="https://www.linkedin.com/in/smilly000/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn" href="https://github.com/s-milly" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" data-resume-btn aria-disabled="true">Résumé coming soon</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <span>© 2026 Shawn Miller</span>
+    <span>PennWest Clarion University</span>
+  </footer>
+
+  <svg class="ball" id="ball" viewBox="0 0 40 40" aria-hidden="true">
+    <circle cx="20" cy="20" r="18.5" fill="#F7F4EE" stroke="#D9D3C7" stroke-width="1"/>
+    <path d="M9 6.5c4.5 3.8 6.5 8.6 6.5 13.5S13.5 29.7 9 33.5M31 6.5c-4.5 3.8-6.5 8.6-6.5 13.5s2 9.7 6.5 13.5" fill="none" stroke="#C8382E" stroke-width="1.6" stroke-dasharray="2 2.2" stroke-linecap="round"/>
+  </svg>
+
+  <script src="projects.js"></script>
+  <script src="site.js"></script>
+</body>
+</html>
