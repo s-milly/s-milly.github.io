@@ -99,9 +99,9 @@ a { color: inherit; }
   position: absolute; inset: 0; opacity: 0; pointer-events: none;
   background: linear-gradient(90deg, rgba(6, 9, 14, .86) 0%, rgba(6, 9, 14, .62) 34%, rgba(6, 9, 14, 0) 62%);
 }
-/* golf: darken only around the caption so the ball on the green stays bright */
+/* golf: the left-side fade ends before the white ball on the green (about 41% across) */
 .scrim--golf {
-  background: radial-gradient(ellipse 52% 34% at 22% 47%, rgba(6, 9, 14, .82) 0%, rgba(6, 9, 14, .55) 55%, rgba(6, 9, 14, 0) 100%);
+  background: linear-gradient(90deg, rgba(6, 9, 14, .86) 0%, rgba(6, 9, 14, .62) 24%, rgba(6, 9, 14, 0) 39%);
 }
 
 .panel {
