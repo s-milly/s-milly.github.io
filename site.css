@@ -30,6 +30,8 @@ body {
 h1, h2 { font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; margin: 0; }
 p { margin: 0; }
 a { color: inherit; }
+.panel p a { text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+.panel p a:hover { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
 
 .skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--accent); color: var(--accent-ink); padding: 8px 14px; border-radius: 8px; }
