@@ -12,9 +12,16 @@
 */
 window.SITE = {
   githubUser: "s-milly",
-  featured: ["super-bowl-defense"],
+  featured: ["pitch-identifier", "super-bowl-defense"],
   hide: [],
   projects: [
+    {
+      name: "pitch-identifier",
+      title: "What Pitch Was That?",
+      description: "A machine learning model that names a pitch from its speed, spin and movement. Trained on 1.4 million MLB pitches in Python, it is 87.8% accurate on pitchers it never saw and 90.1% on college pitchers, beating TrackMan's automatic tags (78.0%).",
+      url: "https://github.com/s-milly/pitch-identifier",
+      language: "Python"
+    },
     {
       name: "super-bowl-defense",
       title: "Does Defense Win Championships?",
