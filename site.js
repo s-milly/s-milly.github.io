@@ -187,7 +187,7 @@
       <div class="card__stats">${stats}</div>
     </a></li>`;
   }
-  const emptyHTML = () => Array.from({ length: 3 }, () => `<li><div class="card card--empty">
+  const emptyHTML = n => Array.from({ length: n }, () => `<li><div class="card card--empty">
       <h3>In the bullpen</h3><p>New work lands here as it ships.</p></div></li>`).join("");
 
   async function loadProjects() {
@@ -214,7 +214,8 @@
         if (ia !== ib) return (ia < 0 ? 1e3 : ia) - (ib < 0 ? 1e3 : ib);
         return new Date(b.updated || 0) - new Date(a.updated || 0);
       });
-    grid.innerHTML = list.length ? list.map(cardHTML).join("") : emptyHTML();
+    // Until there are three projects, "In the bullpen" cards fill out the row.
+    grid.innerHTML = list.map(cardHTML).join("") + emptyHTML(Math.max(0, 3 - list.length));
   }
 
   /* ---------------- signature: the pitch ---------------- */

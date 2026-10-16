@@ -14,6 +14,14 @@ window.SITE = {
   githubUser: "s-milly",
   featured: [],
   hide: [],
-  projects: [],
+  projects: [
+    {
+      name: "s-milly.github.io",
+      title: "Personal Website",
+      description: "This site. A scroll-driven portfolio built with plain HTML, CSS and JavaScript, hosted on GitHub Pages.",
+      url: "https://github.com/s-milly/s-milly.github.io",
+      language: "JavaScript"
+    }
+  ],
   resume: ""
 };
