@@ -139,7 +139,9 @@
   let target = 0, current = 0, last = -1;
   function readScroll() {
     const rect = scene.getBoundingClientRect();
-    const total = scene.offsetHeight - innerHeight;
+    // The last --hold vh of the scene keeps progress at 1, holding the golf beat in place.
+    const hold = (parseFloat(getComputedStyle(scene).getPropertyValue("--hold")) || 0) * innerHeight / 100;
+    const total = scene.offsetHeight - innerHeight - hold;
     target = clamp(-rect.top / total);
   }
   function tick(time) {

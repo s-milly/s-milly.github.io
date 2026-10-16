@@ -73,7 +73,8 @@ a { color: inherit; }
 .btn--solid:hover { background: #fff; }
 
 /* ---------- the scene ---------- */
-.scene { position: relative; height: 520vh; }
+/* --hold: extra pinned scroll at the end so the golf beat does not slip past on one flick. */
+.scene { position: relative; height: 590vh; --hold: 70; }
 .stage {
   position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
   background: var(--canvas);
@@ -253,7 +254,7 @@ a.card.is-strike { border-color: var(--accent); }
   .nav__name { display: none; }
   .nav nav { width: 100%; justify-content: space-between; }
   .nav nav a { padding: 12px 10px; }
-  .scene { height: 470vh; }
+  .scene { height: 530vh; --hold: 60; }
   .window { clip-path: inset(8% 12% 50% 12% round 18px); }
   .ph { object-position: 52% 30%; }
   .plate--field { transform-origin: 52% 16%; }
