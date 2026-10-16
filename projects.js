@@ -12,9 +12,16 @@
 */
 window.SITE = {
   githubUser: "s-milly",
-  featured: [],
+  featured: ["super-bowl-defense"],
   hide: [],
   projects: [
+    {
+      name: "super-bowl-defense",
+      title: "Does Defense Win Championships?",
+      description: "Tests the old saying with data. Ranks every Super Bowl team's regular-season offense and defense, 1966 to 2025, built from game-by-game scores in Python and charted in JavaScript.",
+      url: "https://github.com/s-milly/super-bowl-defense",
+      language: "Python"
+    },
     {
       name: "s-milly.github.io",
       title: "Personal Website",
