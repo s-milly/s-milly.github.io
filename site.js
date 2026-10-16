@@ -178,6 +178,7 @@
       `<span>View on GitHub →</span>`
     ].join("");
     return `<li><a class="card" href="${esc(p.url)}" target="_blank" rel="noopener" data-pitch>
+      <span class="card__stamp" aria-hidden="true">Strike</span>
       <div class="card__body">
         ${p.language ? `<div class="card__lang"><i></i>${esc(p.language)}</div>` : ""}
         <h3>${esc(p.title || pretty(p.name))}</h3>
@@ -219,19 +220,27 @@
   /* ---------------- signature: the pitch ---------------- */
   const ball = document.getElementById("ball");
   let throwing = false;
+  // Safari and every iOS browser (WebKit) only allow a new tab about 1s after the
+  // click; Chrome, Edge and Firefox allow several. Pace the pitch to fit.
+  const ua = navigator.userAgent;
+  const webkit = /AppleWebKit/.test(ua) && !/(Chrome|Chromium|Edg)\//.test(ua);
+  const PACE = webkit ? { flight: 620, hold: 260 } : { flight: 900, hold: 750 };
 
   function pitch(card, url) {
     throwing = true;
-    const r = card.getBoundingClientRect();
-    const tx = r.left + r.width * (0.42 + Math.random() * 0.16);
-    const ty = r.top + r.height * (0.38 + Math.random() * 0.2);
+    const fx = 0.42 + Math.random() * 0.16, fy = 0.38 + Math.random() * 0.2;
+    let r = card.getBoundingClientRect();
     // Released from just below the bottom edge, as if from the viewer's side of the plate.
-    const sx = innerWidth * (tx < innerWidth / 2 ? 0.72 : 0.28), sy = innerHeight + 60;
-    const cx = (sx + tx) / 2, cy = Math.min(sy, ty) - Math.min(220, innerHeight * 0.22);
-    const dur = 560, t0 = performance.now();
+    const sx = innerWidth * (r.left + r.width * fx < innerWidth / 2 ? 0.72 : 0.28), sy = innerHeight + 60;
+    const dur = PACE.flight, t0 = performance.now();
+    let tx, ty;
     ball.style.opacity = 1;
 
     function step(now) {
+      // Re-aim every frame so the pitch still lands if the page scrolls mid-flight.
+      r = card.getBoundingClientRect();
+      tx = r.left + r.width * fx; ty = r.top + r.height * fy;
+      const cx = (sx + tx) / 2, cy = Math.min(sy, ty) - Math.min(220, innerHeight * 0.22);
       const u = clamp((now - t0) / dur);
       const e = u * u * (1.6 - 0.6 * u);              // slight late acceleration, like a pitch
       const x = (1 - e) * (1 - e) * sx + 2 * (1 - e) * e * cx + e * e * tx;
@@ -244,7 +253,8 @@
       ring.className = "impact"; ring.style.left = tx + "px"; ring.style.top = ty + "px";
       document.body.appendChild(ring);
       setTimeout(() => ring.remove(), 600);
-      card.classList.remove("is-hit"); void card.offsetWidth; card.classList.add("is-hit");
+      card.classList.remove("is-hit", "is-strike"); void card.offsetWidth; card.classList.add("is-hit", "is-strike");
+      setTimeout(() => card.classList.remove("is-strike"), PACE.hold + 1400);
       ball.animate([
         { transform: ball.style.transform, opacity: 1 },
         { transform: `translate3d(${tx - 20}px, ${ty + 30}px, 0) scale(.6) rotate(1000deg)`, opacity: 0 }
@@ -258,7 +268,7 @@
         // Popup refused (embedded previews do this): let the card's own link do it.
         card.dataset.thrown = "1";
         card.click();
-      }, 230);
+      }, PACE.hold);
     }
     requestAnimationFrame(step);
   }
