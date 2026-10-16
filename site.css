@@ -93,7 +93,8 @@ a { color: inherit; }
 .plate--suit { inset: auto; will-change: transform, opacity; transform-origin: 50% 32%; }
 .plate--suit .ph { object-position: 50% 28%; }
 .plate--golf { clip-path: inset(100% 0 0 0); will-change: clip-path; }
-.plate--golf .ph { object-position: 50% 82%; }
+.plate--golf .ph { object-position: 50% 72%; }
+@media (min-aspect-ratio: 2/1) { .plate--golf .ph { object-position: 50% 60%; } }  /* ultra-wide: keep Shawn whole */
 .scrim {
   position: absolute; inset: 0; opacity: 0; pointer-events: none;
   background: linear-gradient(90deg, rgba(6, 9, 14, .86) 0%, rgba(6, 9, 14, .62) 34%, rgba(6, 9, 14, 0) 62%);
@@ -255,7 +256,7 @@ a.card.is-strike { border-color: var(--accent); }
   .ph { object-position: 52% 30%; }
   .plate--field { transform-origin: 52% 16%; }
   .plate--suit .ph { object-position: 50% 30%; }
-  .plate--golf .ph { object-position: 36% 50%; }
+  .plate--golf .ph { object-position: 50% 50%; }
   .scrim { background: linear-gradient(0deg, rgba(6, 9, 14, .92) 0%, rgba(6, 9, 14, .72) 24%, rgba(6, 9, 14, 0) 46%); }
   .panel { left: 16px; right: 16px; width: auto; top: auto; bottom: 28px; transform: none; }
   .panel--intro { bottom: 24px; }
