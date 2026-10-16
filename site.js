@@ -227,8 +227,10 @@
   const webkit = /AppleWebKit/.test(ua) && !/(Chrome|Chromium|Edg)\//.test(ua);
   const PACE = webkit ? { flight: 620, hold: 260 } : { flight: 900, hold: 750 };
 
+  let dropAnim = null;
   function pitch(card, url) {
     throwing = true;
+    if (dropAnim) { dropAnim.cancel(); dropAnim = null; }
     const fx = 0.42 + Math.random() * 0.16, fy = 0.38 + Math.random() * 0.2;
     let r = card.getBoundingClientRect();
     // Released from just below the bottom edge, as if from the viewer's side of the plate.
@@ -256,10 +258,12 @@
       setTimeout(() => ring.remove(), 600);
       card.classList.remove("is-hit", "is-strike"); void card.offsetWidth; card.classList.add("is-hit", "is-strike");
       setTimeout(() => card.classList.remove("is-strike"), PACE.hold + 1400);
-      ball.animate([
+      dropAnim = ball.animate([
         { transform: ball.style.transform, opacity: 1 },
         { transform: `translate3d(${tx - 20}px, ${ty + 30}px, 0) scale(.6) rotate(1000deg)`, opacity: 0 }
-      ], { duration: 260, easing: "ease-in", fill: "forwards" }).onfinish = () => { ball.style.opacity = 0; };
+      ], { duration: 260, easing: "ease-in", fill: "forwards" });
+      // Release the held end frame, or it overrides the next throw's inline styles.
+      dropAnim.onfinish = () => { ball.style.opacity = 0; dropAnim.cancel(); dropAnim = null; };
 
       setTimeout(() => {
         throwing = false;
