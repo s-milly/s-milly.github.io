@@ -152,6 +152,27 @@
     requestAnimationFrame(tick);
   }
 
+  /* Golf framing: fit the window so Shawn's cap clears the menu and the white
+     ball rolling toward the cup stays above the bottom edge, whatever the
+     window shape. Positions are fractions of the desktop golf image height. */
+  const golfImg = golf.querySelector("img");
+  const GOLF = { cap: 555 / 1300, ball: 1045 / 1300 };
+  function frameGolf() {
+    if (phone.matches || !golfImg.naturalWidth) { golfImg.style.objectPosition = ""; return; }
+    const W = golf.clientWidth, H = golf.clientHeight;
+    const scale = Math.max(W / golfImg.naturalWidth, H / golfImg.naturalHeight);
+    const I = golfImg.naturalHeight * scale;
+    if (I <= H) return;
+    const top = 70, bottom = H - 36;                       // clear of the menu, clear of the edge
+    const mid = (GOLF.cap + GOLF.ball) / 2 * I;
+    const off = clamp(mid - (top + bottom) / 2, 0, I - H);
+    golfImg.style.objectPosition = `50% ${(off / (I - H)) * 100}%`;
+  }
+  golfImg.addEventListener("load", frameGolf);
+  addEventListener("resize", frameGolf);
+  phone.addEventListener("change", frameGolf);
+  if (golfImg.complete) frameGolf();
+
   /* ---------------- nav ---------------- */
   const nav = document.getElementById("nav");
   const navCheck = () => nav.classList.toggle("is-solid", scene.getBoundingClientRect().bottom < innerHeight * 0.6);
