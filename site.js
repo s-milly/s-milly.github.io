@@ -178,17 +178,8 @@
   const navCheck = () => nav.classList.toggle("is-solid", scene.getBoundingClientRect().bottom < innerHeight * 0.6);
   addEventListener("scroll", navCheck, { passive: true });
 
-  /* ---------------- résumé ---------------- */
-  const S = window.SITE || {};
-  if (S.resume) {
-    document.querySelectorAll("[data-resume-link]").forEach(a => { a.href = S.resume; a.target = "_blank"; a.rel = "noopener"; });
-    document.querySelectorAll("[data-resume-btn]").forEach(a => {
-      a.href = S.resume; a.target = "_blank"; a.rel = "noopener";
-      a.removeAttribute("aria-disabled"); a.textContent = "Download résumé";
-    });
-  }
-
   /* ---------------- projects ---------------- */
+  const S = window.SITE || {};
   const grid = document.getElementById("grid");
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const month = d => d ? new Date(d).toLocaleDateString("en-US", { month: "short", year: "numeric" }) : "";

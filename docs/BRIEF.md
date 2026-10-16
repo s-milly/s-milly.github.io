@@ -16,12 +16,12 @@ Interviewed. Answers below are Shawn's own words where quoted; authored decision
 5. **Signature seed:** "when you click on a project it throws a baseball to hit that project and then it will open the project."
 6. **Range:** "premium minimal to start"
 7. **World:** "one continuous scene that will describe me, and maybe a different section for my projects ... showcase them on the screen at the same time for someone to scroll through and click on the one they wish to view"
-8. **Assets:** two real photos (pitching for Clarion #10 at night; putting on a green at sunset). GitHub empty for now; résumé pending. No generated imagery.
+8. **Assets:** two real photos (pitching for Clarion #10 at night; putting on a green at sunset). No résumé download on the site. No generated imagery.
 
 ## Contact
 - shawnmiller2023@gmail.com
 - https://www.linkedin.com/in/smilly000/
-- Résumé PDF: pending (button wired, shows "coming soon" until the file exists).
+- Résumé: not posted on the site (removed at Shawn's request; everything it lists is already on the page).
 
 ## Feeling curve
 | Act | Feeling | Caused by |
