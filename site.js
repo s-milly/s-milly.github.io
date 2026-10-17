@@ -230,8 +230,8 @@
         if (ia !== ib) return (ia < 0 ? 1e3 : ia) - (ib < 0 ? 1e3 : ib);
         return new Date(b.updated || 0) - new Date(a.updated || 0);
       });
-    // Until there are three projects, "In the bullpen" cards fill out the row.
-    grid.innerHTML = list.map(cardHTML).join("") + emptyHTML(Math.max(0, 3 - list.length));
+    // An "In the bullpen" card always follows the projects, and fills out the row until there are three.
+    grid.innerHTML = list.map(cardHTML).join("") + emptyHTML(Math.max(1, 3 - list.length));
   }
 
   /* ---------------- signature: the pitch ---------------- */
