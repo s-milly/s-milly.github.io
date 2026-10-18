@@ -17,7 +17,7 @@ window.SITE = {
     {
       name: "ai-composer",
       title: "AI Composer",
-      description: "A neural network that writes new four-part music in the style of Bach, played by the instruments you pick. Trained on 306 Bach chorales in PyTorch, it guesses 58.0% of Bach's next notes exactly on chorales it never saw, and it composes right in the browser.",
+      description: "Describe a song and AI writes it while a band plays it on stage. A reader trained on 5,521 musician-written descriptions picks the style (67.3% right on descriptions it never saw, against 31.3% by guessing), and a PyTorch network trained on 306 Bach chorales writes the notes. Includes a Song Maker for writing your own.",
       url: "https://github.com/s-milly/ai-composer",
       language: "Python"
     },
