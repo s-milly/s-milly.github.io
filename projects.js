@@ -17,7 +17,7 @@ window.SITE = {
     {
       name: "ai-composer",
       title: "AI Composer",
-      description: "Describe a song and AI writes it while a band plays it on stage. A reader trained on 5,521 musician-written descriptions picks the style (67.3% right on descriptions it never saw, against 31.3% by guessing), and a PyTorch network trained on 306 Bach chorales writes the notes. Includes a Song Maker for writing your own.",
+      description: "Describe a song and AI writes it while a band plays it on stage. Neural networks trained in PyTorch on 2,145 pop, rock, jazz, folk and classical songs and solos write the chords and melody in the style you ask for, from a rock walk-up song to late night jazz. Includes a Song Maker for writing your own.",
       url: "https://github.com/s-milly/ai-composer",
       language: "Python"
     },
