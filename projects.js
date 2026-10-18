@@ -11,9 +11,16 @@
 */
 window.SITE = {
   githubUser: "s-milly",
-  featured: ["pitch-identifier", "super-bowl-defense"],
+  featured: ["ai-composer", "pitch-identifier", "super-bowl-defense"],
   hide: [],
   projects: [
+    {
+      name: "ai-composer",
+      title: "AI Composer",
+      description: "A neural network that writes new four-part music in the style of Bach, played by the instruments you pick. Trained on 306 Bach chorales in PyTorch, it guesses 58.0% of Bach's next notes exactly on chorales it never saw, and it composes right in the browser.",
+      url: "https://github.com/s-milly/ai-composer",
+      language: "Python"
+    },
     {
       name: "pitch-identifier",
       title: "What Pitch Was That?",
