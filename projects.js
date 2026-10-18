@@ -17,28 +17,28 @@ window.SITE = {
     {
       name: "music-composer",
       title: "Music Composer",
-      description: "Describe a song and AI writes it while a band plays it on stage. Neural networks trained in PyTorch on 2,145 pop, rock, jazz, folk and classical songs and solos write the chords and melody in the style you ask for, from a rock walk-up song to late night jazz. Includes a Song Maker for writing your own.",
+      description: "Describe a song and AI writes it while a band plays it on stage. Trained on 2,145 songs across five genres.",
       url: "https://github.com/s-milly/music-composer",
       language: "Python"
     },
     {
       name: "pitch-identifier",
       title: "What Pitch Was That?",
-      description: "A machine learning model that names a pitch from its speed, spin and movement. Trained on 1.4 million MLB pitches in Python, it is 87.8% accurate on pitchers it never saw and 90.1% on college pitchers, beating TrackMan's automatic tags (78.0%).",
+      description: "Names a pitch from its speed, spin and movement. 87.8% accurate on MLB pitchers it never saw and 90.1% on college pitchers.",
       url: "https://github.com/s-milly/pitch-identifier",
       language: "Python"
     },
     {
       name: "super-bowl-defense",
       title: "Does Defense Win Championships?",
-      description: "Tests the old saying with data. Ranks every Super Bowl team's regular-season offense and defense, 1966 to 2025, built from game-by-game scores in Python and charted in JavaScript.",
+      description: "Ranks every Super Bowl team's offense and defense from 1966 to 2025 to test the old saying.",
       url: "https://github.com/s-milly/super-bowl-defense",
       language: "Python"
     },
     {
       name: "s-milly.github.io",
       title: "Personal Website",
-      description: "This site. A scroll-driven portfolio built with plain HTML, CSS and JavaScript, hosted on GitHub Pages.",
+      description: "This site: a scroll-driven portfolio in plain HTML, CSS and JavaScript.",
       url: "https://github.com/s-milly/s-milly.github.io",
       language: "JavaScript"
     }
