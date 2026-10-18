@@ -11,14 +11,14 @@
 */
 window.SITE = {
   githubUser: "s-milly",
-  featured: ["ai-composer", "pitch-identifier", "super-bowl-defense"],
+  featured: ["music-composer", "pitch-identifier", "super-bowl-defense"],
   hide: [],
   projects: [
     {
-      name: "ai-composer",
-      title: "AI Composer",
+      name: "music-composer",
+      title: "Music Composer",
       description: "Describe a song and AI writes it while a band plays it on stage. Neural networks trained in PyTorch on 2,145 pop, rock, jazz, folk and classical songs and solos write the chords and melody in the style you ask for, from a rock walk-up song to late night jazz. Includes a Song Maker for writing your own.",
-      url: "https://github.com/s-milly/ai-composer",
+      url: "https://github.com/s-milly/music-composer",
       language: "Python"
     },
     {
