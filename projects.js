@@ -17,7 +17,7 @@ window.SITE = {
     {
       name: "music-composer",
       title: "Music Composer",
-      description: "Describe a song and AI writes it while a band plays it on stage. Trained on 2,145 songs across five genres.",
+      description: "Describe a song and AI writes it while a band plays it on stage. Trained on 3,307 songs across five genres.",
       url: "https://github.com/s-milly/music-composer",
       language: "Python"
     },
