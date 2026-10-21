@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Four Fronts | Shawn Miller</title>
+  <meta name="description" content="Four Fronts, a sword-fighting arcade game written in C++ with OpenGL, rebuilt to play in the browser.">
+  <meta name="theme-color" content="#0A0E14">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --canvas: #0A0E14;
+      --surface: #121822;
+      --ink: #EEF1F5;
+      --ink-soft: #9DA7B5;
+      --line: rgba(238, 241, 245, 0.10);
+      --accent: #E3B341;
+      --font-display: "Archivo", system-ui, sans-serif;
+      --font-text: "Inter", system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; }
+    body {
+      min-height: 100svh;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 400 16px/1.6 var(--font-text);
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .back { color: var(--ink-soft); text-decoration: none; font-size: 15px; }
+    .back:hover { color: var(--ink); }
+    .source {
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 6px 14px;
+    }
+    .source:hover { border-color: var(--accent); color: var(--accent); }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: minmax(0, auto) minmax(0, 340px);
+      gap: 40px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px 24px;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .stage {
+      /* The game is 3 wide by 4 tall, sized to fit the screen without scrolling */
+      width: min(100%, calc((100svh - 100px) * 0.75), 600px);
+      justify-self: center;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px var(--line), 0 24px 60px rgba(0, 0, 0, 0.45);
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      cursor: crosshair;
+    }
+    .about h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.1;
+      margin: 0 0 12px;
+    }
+    .about p { margin: 0 0 14px; color: var(--ink-soft); }
+    .about .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+    .about ul { margin: 0 0 14px; padding-left: 18px; color: var(--ink-soft); }
+    .about li { margin-bottom: 4px; }
+    .about strong { color: var(--ink); font-weight: 600; }
+
+    @media (max-width: 860px) {
+      main { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+      .stage { width: min(100%, calc((100svh - 80px) * 0.75), 600px); }
+      .about { max-width: 600px; justify-self: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <a class="back" href="../#projects">← Shawn Miller</a>
+    <a class="source" href="https://github.com/s-milly/s-milly.github.io/blob/main/four-fronts/four_fronts.cpp" target="_blank" rel="noopener">View the C++ source</a>
+  </header>
+
+  <main>
+    <div class="stage">
+      <canvas id="game" width="600" height="800" aria-label="Four Fronts game. Use the arrow keys or W A S D to stab, or click or tap the side an enemy is coming from."></canvas>
+    </div>
+
+    <section class="about">
+      <div class="tag">C++ · OpenGL · GLUT</div>
+      <h1>Four Fronts</h1>
+      <p>A one-life arcade game built for a computer graphics course. Enemy soldiers march in along four stone paths, and the hero in the middle has to stab each one before it reaches him.</p>
+      <ul>
+        <li><strong>One per tile:</strong> only one enemy can stand on each tile number at a time, so you face three at most.</li>
+        <li><strong>Fury meter:</strong> every knockout fills it. When it is full, swords fly out in every direction and the game speeds up.</li>
+        <li><strong>Drawn in code:</strong> every shape, from the pixel-art meadow to the swords, is drawn with OpenGL primitives. There are no image files.</li>
+      </ul>
+      <p>The original runs as a desktop program. This page is a line-by-line port of that code to the browser canvas, so the rules, timing and art match.</p>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

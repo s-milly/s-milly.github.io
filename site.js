@@ -191,7 +191,7 @@
     const stats = [
       p.stars ? `<span>★ ${p.stars}</span>` : "",
       p.updated ? `<span>Updated ${month(p.updated)}</span>` : "",
-      `<span>View on GitHub →</span>`
+      `<span>${esc(p.cta || "View on GitHub →")}</span>`
     ].join("");
     return `<li><a class="card" href="${esc(p.url)}" target="_blank" rel="noopener" data-pitch>
       <span class="card__stamp" aria-hidden="true">Strike</span>

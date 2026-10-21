@@ -7,11 +7,12 @@
   hide        Repo names to leave off the site.
   projects    Hand-written entries. Use these to add or override details
               (a better description, a live demo link, a tag line).
-              { name, description, url, demo, language, tags: [] }
+              { name, title, description, url, language, cta }
+              cta replaces "View on GitHub →" at the bottom of the card.
 */
 window.SITE = {
   githubUser: "s-milly",
-  featured: ["music-composer", "pitch-identifier", "super-bowl-defense"],
+  featured: ["music-composer", "four-fronts", "pitch-identifier", "super-bowl-defense"],
   hide: [],
   projects: [
     {
@@ -20,6 +21,14 @@ window.SITE = {
       description: "Describe a song and AI writes it while a band plays it on stage. Trained on 3,307 songs across five genres.",
       url: "https://github.com/s-milly/music-composer",
       language: "Python"
+    },
+    {
+      name: "four-fronts",
+      title: "Four Fronts",
+      description: "A one-life sword-fighting arcade game written in C++ with OpenGL, rebuilt to play right in the browser.",
+      url: "four-fronts/",
+      language: "C++",
+      cta: "Play it →"
     },
     {
       name: "pitch-identifier",
