@@ -19,8 +19,9 @@ window.SITE = {
       name: "music-composer",
       title: "Music Composer",
       description: "Describe a song and AI writes it while a band plays it on stage. Trained on 3,307 songs across five genres.",
-      url: "https://github.com/s-milly/music-composer",
-      language: "Python"
+      url: "https://s-milly.github.io/music-composer/",
+      language: "Python",
+      cta: "Make a song →"
     },
     {
       name: "four-fronts",
@@ -34,15 +35,17 @@ window.SITE = {
       name: "pitch-identifier",
       title: "What Pitch Was That?",
       description: "Names a pitch from its speed, spin and movement. 87.8% accurate on MLB pitchers it never saw and 90.1% on college pitchers.",
-      url: "https://github.com/s-milly/pitch-identifier",
-      language: "Python"
+      url: "https://s-milly.github.io/pitch-identifier/",
+      language: "Python",
+      cta: "Try it →"
     },
     {
       name: "super-bowl-defense",
       title: "Does Defense Win Championships?",
       description: "Ranks every Super Bowl team's offense and defense from 1966 to 2025 to test the old saying.",
-      url: "https://github.com/s-milly/super-bowl-defense",
-      language: "Python"
+      url: "https://s-milly.github.io/super-bowl-defense/",
+      language: "Python",
+      cta: "See the charts →"
     },
     {
       name: "s-milly.github.io",
