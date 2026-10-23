@@ -12,7 +12,7 @@
 */
 window.SITE = {
   githubUser: "s-milly",
-  featured: ["music-composer", "four-fronts", "pitch-identifier", "super-bowl-defense"],
+  featured: ["music-composer", "four-fronts", "pitch-identifier", "super-bowl-defense", "pgh-bridges-bus"],
   hide: [],
   projects: [
     {
@@ -46,6 +46,14 @@ window.SITE = {
       url: "https://s-milly.github.io/super-bowl-defense/",
       language: "Python",
       cta: "See the charts →"
+    },
+    {
+      name: "pgh-bridges-bus",
+      title: "Pittsburgh Bridges and Bus Riders",
+      description: "Matches every Pittsburgh bus route to the federal bridge inventory. 22 bridges rated Poor carry buses, crossed 1,827 times a weekday.",
+      url: "https://s-milly.github.io/pgh-bridges-bus/",
+      language: "Python",
+      cta: "See the findings →"
     },
     {
       name: "s-milly.github.io",
