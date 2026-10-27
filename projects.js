@@ -24,6 +24,14 @@ window.SITE = {
       cta: "Make a song →"
     },
     {
+      name: "pokemon-safari-zone",
+      title: "Pokémon Quiet Safari",
+      description: "A classroom volume game. While the room stays quiet, wild Pokémon from Red and Blue come out in twelve habitats. Get too loud and they run away.",
+      url: "https://s-milly.github.io/pokemon-safari-zone/",
+      language: "JavaScript",
+      cta: "Play it →"
+    },
+    {
       name: "four-fronts",
       title: "Four Fronts",
       description: "A one-life sword-fighting arcade game written in C++ with OpenGL, rebuilt to play right in the browser.",
