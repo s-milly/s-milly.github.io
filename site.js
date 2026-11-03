@@ -15,6 +15,8 @@
   const scrim = scene.querySelector(".scrim");
   const golfScrim = scene.querySelector(".scrim--golf");
   const net = scene.querySelector(".net");
+  const halo = scene.querySelector(".halo");
+  const duo = scene.querySelector(".duo");
   const panels = [...scene.querySelectorAll("[data-panel]")].map(el => ({
     el, k: el.dataset.panel.split(",").map(Number), on: el.classList.contains("panel--intro")
   }));
@@ -23,10 +25,10 @@
   // and the photo's offset (% of stage) so Shawn stays framed inside the window.
   const FRAMES = {
     desktop: [
-      { at: 0.00, box: [13, 7, 13, 56], r: 16, tx: 17.5, ty: 10 },
-      { at: 0.15, box: [13, 7, 13, 56], r: 16, tx: 17.5, ty: 10 },
-      { at: 0.30, box: [10, 9, 10, 62], r: 16, tx: 19.5, ty: 18 },
-      { at: 0.42, box: [10, 9, 10, 62], r: 16, tx: 19.5, ty: 18 },
+      { at: 0.00, box: [16, 7, 10, 56], r: 16, tx: 17.5, ty: 13 },
+      { at: 0.15, box: [16, 7, 10, 56], r: 16, tx: 17.5, ty: 13 },
+      { at: 0.30, box: [13, 9, 7, 62], r: 16, tx: 19.5, ty: 21 },
+      { at: 0.42, box: [13, 9, 7, 62], r: 16, tx: 19.5, ty: 21 },
       { at: 0.56, box: [0, 0, 0, 0], r: 0, tx: 0, ty: 0 },
       { at: 1.00, box: [0, 0, 0, 0], r: 0, tx: 0, ty: 0 }
     ],
@@ -56,7 +58,7 @@
   const ctx = net.getContext("2d");
   const studentPanel = scene.querySelector(".panel--student");
   const studentText = [studentPanel.querySelector("p"), studentPanel.querySelector(".facts")];
-  let nodes = [], edges = [], netW = 0, netH = 0;
+  let nodes = [], edges = [], netW = 0, netH = 0, lastLayer = 1;
   // Knockout box around the student paragraph and facts, in canvas pixels, measured with the
   // panel at rest. Each frame adds the panel's current offset, so drawing never reads layout.
   let knock = null;
@@ -72,9 +74,12 @@
     netW = net.clientWidth; netH = net.clientHeight;
     net.width = netW * dpr; net.height = netH * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const layers = [4, 6, 6, 5, 3];
-    const x0 = phone.matches ? 0.08 : 0.05, x1 = phone.matches ? 0.92 : 0.52;
-    const y0 = phone.matches ? 0.50 : 0.14, y1 = phone.matches ? 0.96 : 0.86;
+    // Desktop: the last layers reach into the photo window. Phone: the net sits around
+    // the photo, so the gap between photo and heading stays clear.
+    const layers = phone.matches ? [4, 5, 5, 4] : [4, 6, 6, 5, 4, 3];
+    const x0 = phone.matches ? 0.06 : 0.05, x1 = phone.matches ? 0.94 : 0.70;
+    const y0 = phone.matches ? 0.06 : 0.14, y1 = phone.matches ? 0.50 : 0.86;
+    lastLayer = layers.length - 1;
     nodes = []; edges = [];
     layers.forEach((n, li) => {
       const x = lerp(x0, x1, li / (layers.length - 1)) * netW;
@@ -98,7 +103,7 @@
       ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(lerp(a.x, b.x, t), lerp(a.y, b.y, t)); ctx.stroke();
     }
     for (const n of nodes) {
-      const t = clamp((draw - (n.li / 4) * 0.8) / 0.15);
+      const t = clamp((draw - (n.li / lastLayer) * 0.8) / 0.15);
       if (t <= 0) continue;
       const pulse = reduce.matches ? 0.5 : 0.5 + 0.5 * Math.sin(time / 900 + n.ph);
       ctx.fillStyle = `rgba(227,179,65,${(0.35 + 0.4 * pulse) * t})`;
@@ -117,7 +122,9 @@
   function render(p, time) {
     const f = frameAt(p);
     const [t, r, b, l] = f.box;
-    win.style.clipPath = `inset(${t}% ${r}% ${b}% ${l}% round ${f.r}px)`;
+    // Whole pixels: a fractional clip edge anti-aliases differently per GPU tile and shows as a 1px step.
+    const px = (v, s) => Math.round(v * s / 100);
+    win.style.clipPath = `inset(${px(t, stageH)}px ${px(r, stageW)}px ${px(b, stageH)}px ${px(l, stageW)}px round ${f.r}px)`;
     const bleed = seg(p, 0.42, 0.56);
     // Suit to uniform: the headshot holds the window shape it had at the start of
     // the bleed, swells and fades, while the field zooms out from Shawn's face.
@@ -139,6 +146,12 @@
     golf.style.clipPath = `inset(${(1 - g) * 100}% 0 0 0)`;
     scrim.style.opacity = bleed * (1 - g);
     golfScrim.style.opacity = g;
+    // Gold light around the window until the photo opens up to full bleed.
+    const hp = phone.matches ? 7 : 8;
+    halo.style.inset = `${t - hp}% ${r - hp}% ${b - hp}% ${l - hp}%`;
+    halo.style.opacity = 1 - bleed;
+    // Two-tone headshot for the student beat, back to color before the merge.
+    duo.style.opacity = seg(p, 0.19, 0.28) * (1 - seg(p, 0.35, 0.41));
 
     let studentY = 0;
     for (const pn of panels) {
@@ -161,8 +174,9 @@
 
   let target = 0, current = 0, last = -1, prev = 0;
   // Scene geometry, measured on load and resize rather than every frame.
-  let sceneTop = 0, total = 1;
+  let sceneTop = 0, total = 1, stageW = 1, stageH = 1;
   function measureScene() {
+    stageW = win.clientWidth; stageH = win.clientHeight;
     sceneTop = scene.getBoundingClientRect().top + scrollY;
     // The last --hold vh of the scene keeps progress at 1, holding the golf beat in place.
     const hold = (parseFloat(getComputedStyle(scene).getPropertyValue("--hold")) || 0) * innerHeight / 100;

@@ -76,7 +76,12 @@ a { color: inherit; }
   position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
   background: var(--canvas);
 }
-.net { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.net { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+/* Soft gold light behind the photo window; site.js sizes it to the window each frame. */
+.halo {
+  position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(closest-side, rgba(227, 179, 65, .2) 62%, rgba(227, 179, 65, .07) 82%, rgba(227, 179, 65, 0));
+}
 
 .window {
   position: absolute; inset: 0;
@@ -89,6 +94,17 @@ a { color: inherit; }
 .ph { object-fit: cover; object-position: 50% 20%; }
 .plate--suit { inset: auto; will-change: transform, opacity; transform-origin: 50% 32%; }
 .plate--suit .ph { object-position: 50% 28%; }
+/* Darken the studio backdrop toward the page color at the edges, clear of the face. */
+.plate--suit::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 95% at 50% 40%, rgba(10, 14, 20, 0) 52%, rgba(10, 14, 20, .55) 100%);
+}
+/* Student beat: a gold-and-black two-tone copy of the headshot, faded in by site.js. */
+.duo { position: absolute; inset: 0; opacity: 0; isolation: isolate; }
+.duo .ph { filter: grayscale(1) contrast(1.12); }
+.duo::before, .duo::after { content: ""; position: absolute; inset: 0; }
+.duo::before { z-index: 1; background: #EBC66A; mix-blend-mode: multiply; }
+.duo::after { z-index: 2; background: var(--canvas); mix-blend-mode: lighten; }
 .plate--golf { clip-path: inset(100% 0 0 0); will-change: clip-path; }
 .plate--golf .ph { object-position: 50% 77%; }
 .scrim {
@@ -101,7 +117,7 @@ a { color: inherit; }
 }
 
 .panel {
-  position: absolute; left: var(--gutter); top: 50%;
+  position: absolute; left: var(--gutter); top: calc(50% + 3%);
   width: min(560px, 44vw);
   transform: translateY(-50%);
   opacity: 0; visibility: hidden;
@@ -116,7 +132,8 @@ a { color: inherit; }
 .panel--on-photo p { color: rgba(238, 241, 245, .86); }
 .panel--on-photo h2 { text-shadow: 0 2px 24px rgba(0, 0, 0, .35); }
 
-.facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 28px; margin: 32px 0 0; padding-top: 22px; border-top: 1px solid var(--line); }
+.facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: stretch; gap: 24px; margin: 36px 0 0; }
+.facts > div { padding-top: 14px; border-top: 1px solid rgba(227, 179, 65, .55); }
 .facts dt { font-size: 12px; color: var(--ink-soft); letter-spacing: .04em; text-transform: uppercase; }
 .facts dd { margin: 6px 0 0; font-weight: 500; }
 .nowrap { white-space: nowrap; }
@@ -313,7 +330,8 @@ a.card.is-strike { border-color: var(--accent); }
   .facts { gap: 16px; margin-top: 18px; padding-top: 14px; grid-template-columns: repeat(3, auto); }
   .facts dd { font-size: 14px; }
   /* One fact per row on phones: label left, value right, so nothing breaks mid-word. */
-  .facts { grid-template-columns: 1fr; gap: 10px; }
+  .facts { grid-template-columns: 1fr; gap: 10px; border-top: 1px solid var(--line); }
+  .facts > div { padding-top: 0; border-top: 0; }
   .facts > div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
   .facts dd { margin: 0; text-align: right; }
   .btn { min-height: 48px; }
