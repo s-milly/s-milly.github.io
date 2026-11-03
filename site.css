@@ -119,6 +119,20 @@ a { color: inherit; }
 .facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 28px; margin: 32px 0 0; padding-top: 22px; border-top: 1px solid var(--line); }
 .facts dt { font-size: 12px; color: var(--ink-soft); letter-spacing: .04em; text-transform: uppercase; }
 .facts dd { margin: 6px 0 0; font-weight: 500; }
+.nowrap { white-space: nowrap; }
+
+/* First-load entrance for the intro: name, then title line and lede, then buttons, then the photo, 100ms apart. Runs once; "backwards" so no filter lingers afterwards. */
+@keyframes enter { from { opacity: 0; translate: 0 12px; filter: blur(4px); } }
+@keyframes enter-fade { from { opacity: 0; } }
+.panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions, .window {
+  animation: enter-fade .3s ease-out backwards;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions, .window { animation-name: enter; }
+}
+.panel--intro .role, .panel--intro .lede { animation-delay: .1s; }
+.panel--intro .actions { animation-delay: .2s; }
+.window { animation-delay: .3s; }
 
 /* ---------- experience timeline ---------- */
 .experience { padding: clamp(96px, 14vh, 160px) var(--gutter) 0; position: relative; z-index: 1; background: var(--canvas); }
@@ -295,6 +309,10 @@ a.card.is-strike { border-color: var(--accent); }
   .panel .actions { margin-top: 18px; }
   .facts { gap: 16px; margin-top: 18px; padding-top: 14px; grid-template-columns: repeat(3, auto); }
   .facts dd { font-size: 14px; }
+  /* One fact per row on phones: label left, value right, so nothing breaks mid-word. */
+  .facts { grid-template-columns: 1fr; gap: 10px; }
+  .facts > div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
+  .facts dd { margin: 0; text-align: right; }
   .btn { min-height: 48px; }
   .foot { flex-direction: column; }
   .projects__head { margin-bottom: 32px; }

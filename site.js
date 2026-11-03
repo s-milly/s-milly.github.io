@@ -54,6 +54,8 @@
 
   /* neural-net line drawing behind the student beat */
   const ctx = net.getContext("2d");
+  const studentPanel = scene.querySelector(".panel--student");
+  const studentText = [studentPanel.querySelector("p"), studentPanel.querySelector(".facts")];
   let nodes = [], edges = [], netW = 0, netH = 0;
   function buildNet() {
     const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -92,6 +94,17 @@
       ctx.fillStyle = `rgba(227,179,65,${(0.35 + 0.4 * pulse) * t})`;
       ctx.beginPath(); ctx.arc(n.x, n.y, 2.4, 0, 6.283); ctx.fill();
     }
+    // Fade the drawing out behind the paragraph and facts so the lines never cross the text.
+    // The soft edge comes from a shadow cast by a rectangle drawn off-canvas (canvas filters are not in every Safari).
+    const a = studentText[0].getBoundingClientRect(), b = studentText[1].getBoundingClientRect(), c = net.getBoundingClientRect();
+    const pad = 14, blur = 28, off = netW + 200;
+    const x = Math.min(a.left, b.left) - c.left - pad, y = a.top - c.top - pad;
+    const w = Math.max(a.right, b.right) - c.left + pad - x, h = b.bottom - c.top + pad - y;
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.shadowColor = "rgba(0,0,0,0.92)"; ctx.shadowBlur = blur; ctx.shadowOffsetX = off;
+    ctx.fillStyle = "#000"; ctx.fillRect(x - off, y, w, h);
+    ctx.restore();
   }
 
   function render(p, time) {
