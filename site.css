@@ -168,21 +168,38 @@ a { color: inherit; }
   .tcard__back { transform: none; opacity: 0; }
 }
 
+/* ---------- scene mascots (built and moved by mascots.js) ---------- */
+.mascot { position: absolute; left: 0; top: 0; width: var(--s, 64px); pointer-events: none; will-change: transform; }
+.mascot svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .45)); }
+.mascot--bat { visibility: hidden; }
+.mascot--burst { opacity: 0; }
+.mascot--burst svg { filter: none; }
+@media (prefers-reduced-motion: no-preference) {
+  /* Idle life: a blink every few seconds, and swinging legs while the ball sits on the card. */
+  .m-eyes { animation: m-blink 4.8s infinite; }
+  .mascot--bat .m-eyes { animation-delay: -2.1s; }
+  .mascot.is-sitting .m-leg { animation: m-swing .9s ease-in-out infinite alternate; }
+  .mascot.is-sitting .m-leg--r { animation-delay: -.45s; }
+}
+@keyframes m-blink { 0%, 95%, 100% { scale: 1 1; } 97% { scale: 1 .1; } }
+@keyframes m-swing { from { rotate: -12deg; } to { rotate: 12deg; } }
+
 /* First-load entrance for the intro: name, then title line and lede, then buttons, then the photo, 100ms apart. Runs once; "backwards" so no filter lingers afterwards. */
 @keyframes enter { from { opacity: 0; translate: 0 12px; filter: blur(4px); } }
 @keyframes enter-rise { from { opacity: 0; translate: 0 12px; } }
 @keyframes enter-fade { from { opacity: 0; } }
-.panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions, .window, .tcard {
+.panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions, .window, .tcard, .mascot--ball .mascot__body {
   animation: enter-fade .3s var(--ease) backwards;
 }
 @media (prefers-reduced-motion: no-preference) {
   .panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions { animation-name: enter; }
   /* No blur on the photo window: blurring a layer that large is costly on phones. */
-  .window, .tcard { animation-name: enter-rise; }
+  .window, .tcard, .mascot--ball .mascot__body { animation-name: enter-rise; }
 }
 .panel--intro .role, .panel--intro .lede { animation-delay: .1s; }
 .panel--intro .actions { animation-delay: .2s; }
 .window, .tcard { animation-delay: .3s; }
+.mascot--ball .mascot__body { animation-delay: .5s; }
 
 /* ---------- experience timeline ---------- */
 .experience { padding: clamp(96px, 14vh, 160px) var(--gutter) 0; position: relative; z-index: 1; background: var(--canvas); }

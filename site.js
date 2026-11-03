@@ -21,6 +21,7 @@
   const [wmMiller, wmStudent] = scene.querySelectorAll(".wm__word");
   const introPanel = scene.querySelector(".panel--intro");
   const studentPanel = scene.querySelector(".panel--student");
+  const mascots = window.SceneMascots ? SceneMascots.create(scene.querySelector(".stage"), reduce) : null;
   const panels = [...scene.querySelectorAll("[data-panel]")].map(el => ({
     el, k: el.dataset.panel.split(",").map(Number)
   }));
@@ -64,6 +65,7 @@
       left: -W * 0.01 + "px", top: -H * 0.01 + "px",
       width: pw + W * 0.02 + "px", height: ph + H * 0.02 + "px"
     });
+    if (mascots) mascots.measure({ card: { x, y, w, h }, W, H, phone: phone.matches, studentPanel });
   }
 
   function frameAt(p) {
@@ -98,6 +100,7 @@
         t += ch * (1 - sy) / 2; b += ch * (1 - sy) / 2;
       }
     }
+    if (mascots) mascots.render(p, ang, 1 + 0.04 * Math.sin(Math.PI * (flipTo + flipBack)));
     const gone = seg(p, 0.42, 0.44);
     card.style.opacity = 1 - gone;
     card.style.visibility = gone >= 1 ? "hidden" : "visible";
