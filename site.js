@@ -155,7 +155,13 @@
     const hold = (parseFloat(getComputedStyle(scene).getPropertyValue("--hold")) || 0) * innerHeight / 100;
     total = Math.max(1, scene.offsetHeight - innerHeight - hold);
   }
-  function readScroll() { target = clamp((scrollY - sceneTop) / total); }
+  // The card and student beats (progress 0 to INTRO) get SLOW times as much scroll per unit
+  // as the rest, so the mascots' opening moves are easy to follow. site.css makes the scene
+  // taller by the same amount, so the baseball and golf beats keep their pace.
+  const INTRO = 0.44, SLOW = 1.6;
+  const SPLIT = INTRO * SLOW / (INTRO * SLOW + 1 - INTRO);   // scroll fraction where the intro ends
+  const remap = u => u < SPLIT ? INTRO * u / SPLIT : INTRO + (u - SPLIT) / (1 - SPLIT) * (1 - INTRO);
+  function readScroll() { target = remap(clamp((scrollY - sceneTop) / total)); }
   function tick(time) {
     readScroll();
     // Catch-up rate is set per 60Hz frame and scaled by elapsed time, so the scene
