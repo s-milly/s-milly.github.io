@@ -76,13 +76,6 @@ a { color: inherit; }
   position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden;
   background: var(--canvas);
 }
-.net { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
-/* Soft gold light behind the photo window; site.js sizes it to the window each frame. */
-.halo {
-  position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(227, 179, 65, .2) 62%, rgba(227, 179, 65, .07) 82%, rgba(227, 179, 65, 0));
-}
-
 .window {
   position: absolute; inset: 0;
   clip-path: inset(13% 7% 13% 56% round 16px);
@@ -93,18 +86,7 @@ a { color: inherit; }
 .plate picture, .plate img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .ph { object-fit: cover; object-position: 50% 20%; }
 .plate--suit { inset: auto; will-change: transform, opacity; transform-origin: 50% 32%; }
-.plate--suit .ph { object-position: 50% 28%; }
-/* Darken the studio backdrop toward the page color at the edges, clear of the face. */
-.plate--suit::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(120% 95% at 50% 40%, rgba(10, 14, 20, 0) 52%, rgba(10, 14, 20, .55) 100%);
-}
-/* Student beat: a gold-and-black two-tone copy of the headshot, faded in by site.js. */
-.duo { position: absolute; inset: 0; opacity: 0; isolation: isolate; }
-.duo .ph { filter: grayscale(1) contrast(1.12); }
-.duo::before, .duo::after { content: ""; position: absolute; inset: 0; }
-.duo::before { z-index: 1; background: #EBC66A; mix-blend-mode: multiply; }
-.duo::after { z-index: 2; background: var(--canvas); mix-blend-mode: lighten; }
+.plate--suit .ph, .tcard__photo .ph { object-position: 50% 28%; }
 .plate--golf { clip-path: inset(100% 0 0 0); will-change: clip-path; }
 .plate--golf .ph { object-position: 50% 77%; }
 .scrim {
@@ -132,27 +114,75 @@ a { color: inherit; }
 .panel--on-photo p { color: rgba(238, 241, 245, .86); }
 .panel--on-photo h2 { text-shadow: 0 2px 24px rgba(0, 0, 0, .35); }
 
-.facts { display: grid; grid-template-columns: repeat(3, auto); justify-content: stretch; gap: 24px; margin: 36px 0 0; }
-.facts > div { padding-top: 14px; border-top: 1px solid rgba(227, 179, 65, .55); }
-.facts dt { font-size: 12px; color: var(--ink-soft); letter-spacing: .04em; text-transform: uppercase; }
-.facts dd { margin: 6px 0 0; font-weight: 500; }
 .nowrap { white-space: nowrap; }
+
+/* ---------- the card (intro and student beats) ---------- */
+.wm { position: absolute; inset: 0; pointer-events: none; }
+.wm__word {
+  position: absolute; left: -2vw; top: 50%; translate: 0 -50%;
+  font: 800 clamp(140px, 24vw, 360px)/.8 var(--font-display); letter-spacing: -.06em; text-transform: uppercase; white-space: nowrap;
+  color: transparent; -webkit-text-stroke: 2px rgba(238, 241, 245, .14);
+}
+.wm__word + .wm__word { opacity: 0; }
+
+/* Sized and placed by site.js (left, top, width, height). Inside, sizes are in cqw so the card scales as one piece. */
+.tcard { position: absolute; left: 0; top: 0; width: 0; height: 0; perspective: 1800px; container-type: inline-size; }
+.tcard__inner { position: absolute; inset: 0; transform-style: preserve-3d; will-change: transform; }
+.tcard__face {
+  position: absolute; inset: 0; overflow: hidden;
+  -webkit-backface-visibility: hidden; backface-visibility: hidden;
+  background: #F4EFE4; color: #0E1A2B;
+  border-radius: 5.1cqw; /* photo radius 1.7cqw + padding 3.4cqw */
+  box-shadow: 0 2.4cqw 7cqw rgba(0, 0, 0, .5);
+}
+.tcard__photo { position: absolute; left: 3.4cqw; right: 3.4cqw; top: 3.4cqw; height: 113.2cqw; border-radius: 1.7cqw; overflow: hidden; background: #3a3a38; }
+.tcard__photo .ph { position: absolute; display: block; max-width: none; }
+.tcard__tag {
+  position: absolute; left: 6.4cqw; top: 6.4cqw;
+  background: var(--accent); color: var(--accent-ink); border-radius: .8cqw; padding: 1.3cqw 2cqw;
+  font: 700 max(9px, 2.3cqw)/1 var(--font-display); letter-spacing: .12em; text-transform: uppercase;
+}
+.tcard__plate { position: absolute; left: 3.4cqw; right: 3.4cqw; bottom: 3.4cqw; top: 119cqw; display: flex; justify-content: space-between; align-items: center; gap: 3cqw; }
+.tcard__plate b { display: block; font: 800 7.6cqw/1 var(--font-display); letter-spacing: -.02em; text-transform: uppercase; }
+.tcard__plate small { display: block; margin-top: 1.6cqw; font: 600 max(8px, 2.3cqw)/1.2 var(--font-text); letter-spacing: .14em; text-transform: uppercase; color: #6B6455; }
+.tcard__badge { flex: none; display: grid; place-items: center; width: 14.4cqw; height: 14.4cqw; border-radius: 50%; background: #0E1A2B; color: var(--accent); font: 800 max(10px, 2.9cqw)/1 var(--font-display); }
+.tcard__back { transform: rotateY(180deg); display: flex; flex-direction: column; padding: 6.4cqw 6.8cqw 0; }
+.tcard__head { display: flex; justify-content: space-between; align-items: flex-start; padding-bottom: 3.2cqw; border-bottom: .8cqw solid #0E1A2B; }
+.tcard__head b { font: 800 8.8cqw/.95 var(--font-display); letter-spacing: -.02em; text-transform: uppercase; }
+.tcard__head span { background: #0E1A2B; color: #F4EFE4; border-radius: .8cqw; padding: 1.3cqw 1.9cqw; font: 700 max(9px, 2.3cqw)/1 var(--font-display); letter-spacing: .14em; text-transform: uppercase; }
+.tcard__rows { flex: 1; display: flex; flex-direction: column; justify-content: space-evenly; margin: 0; }
+.tcard__rows > div { display: flex; justify-content: space-between; align-items: baseline; gap: 4cqw; padding-bottom: 3.6cqw; border-bottom: 1px solid rgba(14, 26, 43, .18); }
+.tcard__rows dt { font: 600 max(9px, 2.3cqw)/1.2 var(--font-text); letter-spacing: .12em; text-transform: uppercase; color: #6B6455; }
+.tcard__rows dd { margin: 0; text-align: right; font: 700 max(13px, 4.3cqw)/1.25 var(--font-display); letter-spacing: -.01em; }
+.tcard__stripe {
+  flex: none; margin: 0 -6.8cqw; height: 12cqw; display: grid; place-items: center;
+  background: #0E1A2B; color: var(--accent); font: 700 max(9px, 2.5cqw)/1 var(--font-display); letter-spacing: .2em; text-transform: uppercase;
+}
+/* Narrow cards (phones): label above value, so Sub-Baccalaureate stays on one line. */
+@container (max-width: 320px) {
+  .tcard__rows > div { flex-direction: column; align-items: flex-start; gap: 3px; }
+  .tcard__rows dd { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  /* No turning: the back fades in over the front. */
+  .tcard__back { transform: none; opacity: 0; }
+}
 
 /* First-load entrance for the intro: name, then title line and lede, then buttons, then the photo, 100ms apart. Runs once; "backwards" so no filter lingers afterwards. */
 @keyframes enter { from { opacity: 0; translate: 0 12px; filter: blur(4px); } }
 @keyframes enter-rise { from { opacity: 0; translate: 0 12px; } }
 @keyframes enter-fade { from { opacity: 0; } }
-.panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions, .window {
+.panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions, .window, .tcard {
   animation: enter-fade .3s var(--ease) backwards;
 }
 @media (prefers-reduced-motion: no-preference) {
   .panel--intro h1, .panel--intro .role, .panel--intro .lede, .panel--intro .actions { animation-name: enter; }
   /* No blur on the photo window: blurring a layer that large is costly on phones. */
-  .window { animation-name: enter-rise; }
+  .window, .tcard { animation-name: enter-rise; }
 }
 .panel--intro .role, .panel--intro .lede { animation-delay: .1s; }
 .panel--intro .actions { animation-delay: .2s; }
-.window { animation-delay: .3s; }
+.window, .tcard { animation-delay: .3s; }
 
 /* ---------- experience timeline ---------- */
 .experience { padding: clamp(96px, 14vh, 160px) var(--gutter) 0; position: relative; z-index: 1; background: var(--canvas); }
@@ -322,18 +352,12 @@ a.card.is-strike { border-color: var(--accent); }
   .panel { left: 16px; right: 16px; width: auto; top: auto; bottom: 28px; transform: none; }
   .panel--intro { bottom: 24px; }
   .panel h1 { font-size: clamp(48px, 14vw, 64px); }
+  .wm__word { top: 30%; font-size: 150px; -webkit-text-stroke-width: 1.5px; }
   .panel h2 { font-size: 30px; }
   .panel p { margin-top: 12px; font-size: 15px; }
   .panel .role { margin-top: 14px; font-size: 13px; }
   .panel .lede { font-size: 15px; margin-top: 8px; }
   .panel .actions { margin-top: 18px; }
-  .facts { gap: 16px; margin-top: 18px; padding-top: 14px; grid-template-columns: repeat(3, auto); }
-  .facts dd { font-size: 14px; }
-  /* One fact per row on phones: label left, value right, so nothing breaks mid-word. */
-  .facts { grid-template-columns: 1fr; gap: 10px; border-top: 1px solid var(--line); }
-  .facts > div { padding-top: 0; border-top: 0; }
-  .facts > div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; }
-  .facts dd { margin: 0; text-align: right; }
   .btn { min-height: 48px; }
   .foot { flex-direction: column; }
   .projects__head { margin-bottom: 32px; }

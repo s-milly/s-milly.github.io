@@ -3,7 +3,7 @@
 Static GitHub Pages site (no build step). Design brief and decisions: `docs/BRIEF.md`.
 
 - `index.html`: markup. Sections in order: pinned scroll scene (#about: intro, student, baseball, golf), #experience timeline, #projects grid, #contact.
-- `site.js`: scene engine (scroll progress lerped, window clip-path keyframes in `FRAMES`), suit-to-uniform merge, timeline reveal and details toggles, GitHub repo loader, and the signature "pitch" (clicking a project throws a baseball at the card, then opens it).
+- `site.js`: scene engine (scroll progress lerped; `measureCard` places the baseball card, which turns over on the student beat, and the photo window grows out of the card's photo area at the merge), suit-to-uniform merge, timeline reveal and details toggles, GitHub repo loader, and the signature "pitch" (clicking a project throws a baseball at the card, then opens it).
 - `site.css`: tokens on `:root` (dark, Clarion gold accent). Phone layout under `max-width: 760px`.
 - `projects.js`: user-editable config (`githubUser`, `featured`, `hide`, `projects`).
 
