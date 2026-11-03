@@ -57,6 +57,16 @@
   const studentPanel = scene.querySelector(".panel--student");
   const studentText = [studentPanel.querySelector("p"), studentPanel.querySelector(".facts")];
   let nodes = [], edges = [], netW = 0, netH = 0;
+  // Knockout box around the student paragraph and facts, in canvas pixels, measured with the
+  // panel at rest. Each frame adds the panel's current offset, so drawing never reads layout.
+  let knock = null;
+  function measureKnock() {
+    const a = studentText[0].getBoundingClientRect(), b = studentText[1].getBoundingClientRect(), c = net.getBoundingClientRect();
+    const dy = parseFloat((studentPanel.style.translate || "0 0").split(" ")[1]) || 0;
+    const pad = 14;
+    const x = Math.min(a.left, b.left) - c.left - pad, y = a.top - c.top - pad - dy;
+    knock = { x, y, w: Math.max(a.right, b.right) - c.left + pad - x, h: b.bottom - c.top + pad - dy - y };
+  }
   function buildNet() {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     netW = net.clientWidth; netH = net.clientHeight;
@@ -77,7 +87,7 @@
       if (b.li === a.li + 1 && Math.random() < 0.55) edges.push([i, j, (a.li + Math.random() * 0.9) / (layers.length - 1)]);
     }));
   }
-  function drawNet(draw, time) {
+  function drawNet(draw, time, dy) {
     ctx.clearRect(0, 0, netW, netH);
     ctx.lineWidth = 1;
     for (const [i, j, d] of edges) {
@@ -96,14 +106,11 @@
     }
     // Fade the drawing out behind the paragraph and facts so the lines never cross the text.
     // The soft edge comes from a shadow cast by a rectangle drawn off-canvas (canvas filters are not in every Safari).
-    const a = studentText[0].getBoundingClientRect(), b = studentText[1].getBoundingClientRect(), c = net.getBoundingClientRect();
-    const pad = 14, blur = 28, off = netW + 200;
-    const x = Math.min(a.left, b.left) - c.left - pad, y = a.top - c.top - pad;
-    const w = Math.max(a.right, b.right) - c.left + pad - x, h = b.bottom - c.top + pad - y;
+    const blur = 28, off = netW + 200;
     ctx.save();
     ctx.globalCompositeOperation = "destination-out";
     ctx.shadowColor = "rgba(0,0,0,0.92)"; ctx.shadowBlur = blur; ctx.shadowOffsetX = off;
-    ctx.fillStyle = "#000"; ctx.fillRect(x - off, y, w, h);
+    ctx.fillStyle = "#000"; ctx.fillRect(knock.x - off, knock.y + dy, knock.w, knock.h);
     ctx.restore();
   }
 
@@ -133,10 +140,7 @@
     scrim.style.opacity = bleed * (1 - g);
     golfScrim.style.opacity = g;
 
-    const netAlpha = seg(p, 0.13, 0.22) * (1 - seg(p, 0.42, 0.5));
-    net.style.opacity = netAlpha * (phone.matches ? 0.55 : 1);
-    if (netAlpha > 0.001) drawNet(seg(p, 0.15, 0.36), time);
-
+    let studentY = 0;
     for (const pn of panels) {
       const [a0, a1, o0, o1] = pn.k;
       const vin = a1 === 0 ? 1 : seg(p, a0, a1);
@@ -145,21 +149,34 @@
       const y = (1 - vin) * 28 - vout * 28;
       pn.el.style.opacity = o;
       pn.el.style.visibility = o < 0.01 ? "hidden" : "visible";
-      pn.el.style.translate = `0 ${reduce.matches ? 0 : y}px`;
+      const dy = reduce.matches ? 0 : y;
+      pn.el.style.translate = `0 ${dy}px`;
+      if (pn.el === studentPanel) studentY = dy;
     }
+
+    const netAlpha = seg(p, 0.13, 0.22) * (1 - seg(p, 0.42, 0.5));
+    net.style.opacity = netAlpha * (phone.matches ? 0.55 : 1);
+    if (netAlpha > 0.001) drawNet(seg(p, 0.15, 0.36), time, studentY);
   }
 
-  let target = 0, current = 0, last = -1;
-  function readScroll() {
-    const rect = scene.getBoundingClientRect();
+  let target = 0, current = 0, last = -1, prev = 0;
+  // Scene geometry, measured on load and resize rather than every frame.
+  let sceneTop = 0, total = 1;
+  function measureScene() {
+    sceneTop = scene.getBoundingClientRect().top + scrollY;
     // The last --hold vh of the scene keeps progress at 1, holding the golf beat in place.
     const hold = (parseFloat(getComputedStyle(scene).getPropertyValue("--hold")) || 0) * innerHeight / 100;
-    const total = scene.offsetHeight - innerHeight - hold;
-    target = clamp(-rect.top / total);
+    total = Math.max(1, scene.offsetHeight - innerHeight - hold);
   }
+  function readScroll() { target = clamp((scrollY - sceneTop) / total); }
   function tick(time) {
     readScroll();
-    const k = reduce.matches ? 1 : (phone.matches ? 0.18 : 0.11);
+    // Catch-up rate is set per 60Hz frame and scaled by elapsed time, so the scene
+    // feels the same on 60Hz and 120Hz screens.
+    const dt = prev ? Math.min(time - prev, 100) : 16.67;
+    prev = time;
+    const k60 = phone.matches ? 0.18 : 0.11;
+    const k = reduce.matches ? 1 : 1 - Math.pow(1 - k60, dt / 16.67);
     current += (target - current) * k;
     if (Math.abs(target - current) < 0.0004) current = target;
     const netLive = current > 0.12 && current < 0.5;
@@ -358,9 +375,12 @@
   }
 
   /* ---------------- boot ---------------- */
-  buildNet();
-  addEventListener("resize", () => { buildNet(); last = -1; });
-  phone.addEventListener("change", () => { buildNet(); last = -1; });
+  const remeasure = () => { measureScene(); buildNet(); measureKnock(); last = -1; };
+  measureScene(); buildNet(); measureKnock();
+  addEventListener("resize", remeasure);
+  phone.addEventListener("change", remeasure);
+  addEventListener("load", remeasure);
+  if (document.fonts) document.fonts.ready.then(remeasure);
   readScroll(); current = target; render(current, 0); navCheck();
   requestAnimationFrame(tick);
   loadProjects();
