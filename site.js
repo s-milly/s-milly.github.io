@@ -324,10 +324,18 @@
       });
     });
     const update = () => {
-      if (reduce.matches) { tl.classList.remove("is-armed"); fill.style.transform = "scaleY(1)"; return; }
+      if (reduce.matches) {
+        tl.classList.remove("is-armed"); fill.style.transform = "scaleY(1)";
+        for (const it of items) it.classList.add("is-lit");
+        return;
+      }
       tl.classList.add("is-armed");
       const r = tl.getBoundingClientRect(), line = innerHeight * 0.72;
-      fill.style.transform = `scaleY(${clamp((line - r.top) / r.height)})`;
+      const s = clamp((line - r.top) / r.height);
+      fill.style.transform = `scaleY(${s})`;
+      // The fill runs from 10px below the top to 10px above the bottom; a dot lights once the tip reaches its centre.
+      const tip = 10 + s * (tl.offsetHeight - 20);
+      for (const it of items) it.classList.toggle("is-lit", tip >= it.offsetTop + 14);
       for (const it of items) if (it.getBoundingClientRect().top < line + 10) it.classList.add("is-in");
     };
     let queued = false;

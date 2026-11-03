@@ -142,7 +142,9 @@ a { color: inherit; }
   content: ""; grid-column: 2; grid-row: 1; justify-self: center; margin-top: 6px;
   width: 12px; height: 12px; border-radius: 50%; background: var(--canvas);
   border: 2px solid var(--ink-soft); position: relative; z-index: 1;
+  transition: background-color .35s var(--ease), border-color .35s var(--ease);
 }
+.tl__item.is-lit::before { background: var(--accent); border-color: var(--accent); }
 .tl__item.is-current::before { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 5px rgba(227, 179, 65, .18); }
 .tl__when { grid-column: 1; grid-row: 1; color: var(--ink-soft); font-size: 14px; font-variant-numeric: tabular-nums; padding-top: 1px; padding-right: 8px; }
 .tl__when span { display: block; margin-top: 4px; font-size: 13px; opacity: .75; }
