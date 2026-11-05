@@ -406,6 +406,28 @@
     update();
   }
 
+  /* ---------------- skills reveal ---------------- */
+  // Each group rises in once it nears the viewport, or once it is above it (a jump past it, like the
+  // Contact link). Groups that arrive together go 100ms apart.
+  {
+    const sk = document.getElementById("skills");
+    const groups = sk ? [...sk.querySelectorAll(".skills__group")] : [];
+    if (groups.length) {
+      sk.classList.add("is-armed");
+      let queued = false;
+      const check = () => {
+        queued = false;
+        let n = 0;
+        for (const g of groups) if (!g.classList.contains("is-in") && g.getBoundingClientRect().top < innerHeight * 0.88) {
+          g.style.transitionDelay = (n++ * 100) + "ms";
+          g.classList.add("is-in");
+        }
+      };
+      addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(check); } }, { passive: true });
+      check();
+    }
+  }
+
   /* ---------------- boot ---------------- */
   const remeasure = () => { measureScene(); measureEnd(); measureCard(); frameGolf(); last = -1; };
   measureScene(); measureEnd(); measureCard();
