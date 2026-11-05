@@ -192,9 +192,6 @@
   let target = 0, current = 0, last = -1, prev = 0, cardAng = 0, cardLift = 1, mLast = "";
   // Scene geometry, measured on load and resize rather than every frame.
   let sceneTop = 0, sceneH = 1, total = 1, stageW = 1, stageH = 1;
-  // The experience timeline, for the ball that hangs from the tip of its gold line: page top, height,
-  // and the line's x on screen. Kept by the timeline code below whenever it reads the timeline's box.
-  let tlGeo = null;
   function measureScene() {
     stageW = win.clientWidth; stageH = win.clientHeight;
     sceneTop = scene.getBoundingClientRect().top + scrollY;
@@ -206,20 +203,10 @@
   // Progress follows scroll at one pace for the whole scene. site.css sets the scene height
   // so every beat gets the slower pace the card and student beats used to have.
   function readScroll() { target = clamp((scrollY - sceneTop) / total); }
-  // After the scene the stage scrolls up with the page; the ball leaps from the golf green to the
-  // tip of the timeline's gold line (hand 0..1), reached as the timeline's top comes up to 80% of the screen.
+  // After the scene the stage scrolls up with the page, and the ball (fixed to the viewport) goes with it.
   function mascotWorld() {
     const end = sceneTop + sceneH - stageH;          // scroll position where the stage stops being pinned
-    const u = Math.max(0, scrollY - end);
-    let tip = null, hand = 0;
-    if (tlGeo) {
-      const top = tlGeo.top - scrollY;
-      // The same fill as the timeline code: its tip runs 10px in from each end, level with 72% of the screen.
-      const f = reduce.matches ? 1 : clamp((innerHeight * 0.72 - top) / tlGeo.h);
-      tip = { x: tlGeo.x, y: top + 10 + f * (tlGeo.h - 20) };
-      hand = clamp(u / Math.max(1, tlGeo.top - end - innerHeight * 0.8));
-    }
-    return { stageY: -u, hand, tip };
+    return { stageY: -Math.max(0, scrollY - end) };
   }
   function tick(time) {
     readScroll();
@@ -452,9 +439,7 @@
         if (open) requestAnimationFrame(update);
       });
     });
-    const keep = r => { tlGeo = { top: r.top + scrollY, h: tl.offsetHeight, x: r.left + fill.offsetLeft + 1 }; };
     const update = () => {
-      keep(tl.getBoundingClientRect());
       if (reduce.matches) {
         tl.classList.remove("is-armed"); fill.style.transform = "scaleY(1)";
         for (const it of items) it.classList.add("is-lit");

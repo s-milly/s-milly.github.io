@@ -1,7 +1,7 @@
 /* The two scene mascots. The baseball turns the card, points at the student line, is pitched
    into the field photo and hit back by the bat to stand on "mound" in the baseball heading. On the golf beat it
-   walks into the photo and tends the flag at the cup, and after the scene it leaps onto the
-   gold line of the experience timeline and hangs from its tip. It never leaves the screen.
+   walks into the photo and tends the flag at the cup, and after the scene it scrolls away with the
+   golf photo.
    Everything follows scroll progress (p, the same 0..1 value as the scene) except the hit and
    the flight back, which play once on a clock, because a swing scrubbed slowly by scroll looks limp.
    The ball is fixed to the viewport so it can leave the pinned stage; the bat stays in the stage.
@@ -158,7 +158,7 @@ window.SceneMascots = (() => {
       rot(R.armL, armL); rot(R.armR, -armR); rot(R.legL, legL); rot(R.legR, legR);
     }
     const run = (phase, amt = 30) => ({ legL: Math.sin(phase) * amt, legR: -Math.sin(phase) * amt });
-    const mode = cls => { for (const c of ["is-sitting", "is-tending", "is-hanging"]) ball.classList.toggle(c, c === cls); };
+    const mode = cls => { for (const c of ["is-sitting", "is-tending"]) ball.classList.toggle(c, c === cls); };
 
     // Where the card's left edge sits on screen when the card is turned `ang` degrees
     // (rotateY with the card's 1800px perspective and its small lift while turning).
@@ -230,8 +230,8 @@ window.SceneMascots = (() => {
       }).catch(() => {});
     }
 
-    // Where the ball is once it has been hit back: on the heading, walking to the cup, tending the flag,
-    // then (past the scene) leaping to the timeline's gold line and hanging from its tip.
+    // Where the ball is once it has been hit back: on the heading, walking to the cup, and tending the flag
+    // (past the scene it stays at the flag and scrolls up with the photo).
     function after(p, w) {
       const g = G;
       bat.style.visibility = "hidden";
@@ -254,15 +254,6 @@ window.SceneMascots = (() => {
         ps = { armL: 20, armR: lerp(35, 120, r) }; cls = r >= 1 ? "is-tending" : "";
       }
       y += w.stageY;
-      if (w.hand > 0 && w.tip) {
-        // The hand on the line's tip; the leap goes from the green (moving up with the page) in a short arc.
-        const e = smooth(w.hand);
-        const hx = w.tip.x - 0.77 * g.s, hy = w.tip.y - 0.4 * g.s;
-        x = lerp(x, hx, e); y = lerp(y, hy, e) - Math.sin(Math.PI * e) * g.H * 0.12;
-        flip = false; o = 1;
-        if (w.hand < 1) { ps = { armL: 150, armR: lerp(150, 165, e), legL: -16, legR: 16 }; cls = ""; }
-        else { ps = { armL: 22, armR: 165, legL: -8, legR: 8 }; cls = "is-hanging"; }
-      }
       place(ball, x, y);
       B.body.style.transform = flip ? "scaleX(-1)" : "none";
       B.limbs.style.opacity = 1;
@@ -279,10 +270,8 @@ window.SceneMascots = (() => {
         { o: seg(p, 0.27, 0.31) * (1 - seg(p, 0.36, 0.4)), at: g.point, flip: !g.phone, ps: g.phone ? { armL: 20, armR: 40 } : { armL: 20, armR: 100 } },
         { o: seg(p, 0.52, 0.56) * (1 - seg(p, 0.57, 0.59)), at: g.side, ps: { armL: 15, armR: 15 } },
         { o: seg(p, 0.6, 0.63) * (1 - seg(p, 0.73, 0.77)), at: g.sit, ps: { armL: 20, armR: 20 } },
-        { o: seg(p, 0.86, 0.9) * (1 - seg(w.hand, 0, 0.4)), at: { x: g.stand.x, y: g.stand.y + w.stageY }, ps: { armL: 20, armR: 120 } }
+        { o: seg(p, 0.86, 0.9), at: { x: g.stand.x, y: g.stand.y + w.stageY }, ps: { armL: 20, armR: 120 } }
       ];
-      // Past the scene, it hangs still from the bottom of the (already full) gold line.
-      if (w.tip && w.hand >= 0.5) spots.push({ o: 1, at: { x: w.tip.x - 0.77 * g.s, y: w.tip.y - 0.4 * g.s }, ps: { armL: 22, armR: 165 } });
       const sp = spots.reduce((a, b) => (b.o > a.o ? b : a));
       place(ball, sp.at.x, sp.at.y);
       B.body.style.transform = sp.flip ? "scaleX(-1)" : "none";
@@ -299,8 +288,8 @@ window.SceneMascots = (() => {
       pose(T, { armL: 25, armR: 25 });
     }
 
-    // w: { stageY (how far the stage has scrolled up after the scene), hand (0..1 leap to the line), tip (line tip on screen) }
-    function render(p, ang, lift, w = { stageY: 0, hand: 0, tip: null }) {
+    // w: { stageY (how far the stage has scrolled up after the scene) }
+    function render(p, ang, lift, w = { stageY: 0 }) {
       if (!G) return;
       lastArgs = [p, ang, lift, w];
       if (reduce.matches) { if (state !== "ready") reset(); renderReduced(p, w); return; }
