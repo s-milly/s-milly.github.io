@@ -242,6 +242,49 @@
   const navCheck = () => nav.classList.toggle("is-solid", scene.getBoundingClientRect().bottom < innerHeight * 0.6);
   addEventListener("scroll", navCheck, { passive: true });
 
+  /* Gold underline under the nav link for the section in view. Skills has no link, so the line fades out there. */
+  const mark = nav.querySelector(".nav__mark");
+  const links = [...nav.querySelectorAll("nav a[href^='#']")];
+  const marked = links.map(a => [a, document.querySelector(a.getAttribute("href"))]).filter(([, el]) => el);
+  let markOn = null;
+  const markCheck = () => {
+    const line = innerHeight * 0.4, atEnd = innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
+    let on = null;
+    for (const [a, el] of marked) {
+      const r = el.getBoundingClientRect();
+      if ((r.top <= line && r.bottom > line) || (atEnd && a === marked[marked.length - 1][0])) on = a;
+    }
+    if (on && !on.offsetWidth) on = null; // Experience is hidden on phones
+    if (on !== markOn) {
+      if (markOn) markOn.removeAttribute("aria-current");
+      if (on) on.setAttribute("aria-current", "location");
+    }
+    if (on) {
+      const box = nav.querySelector("nav").getBoundingClientRect(), r = on.getBoundingClientRect(), inset = parseFloat(getComputedStyle(on).paddingLeft);
+      // Slide only between links; the first placement snaps so the line does not sweep in from the left.
+      mark.classList.toggle("is-moving", !!markOn && mark.classList.contains("is-on"));
+      mark.style.transform = `translateX(${r.left - box.left + inset}px) scaleX(${(r.width - inset * 2) / 100})`;
+    }
+    mark.classList.toggle("is-on", !!on);
+    markOn = on;
+  };
+  let markQueued = false;
+  addEventListener("scroll", () => { if (!markQueued) { markQueued = true; requestAnimationFrame(() => { markQueued = false; markCheck(); }); } }, { passive: true });
+  addEventListener("resize", () => { mark.classList.remove("is-moving"); markOn && markOn.removeAttribute("aria-current"); markOn = null; markCheck(); });
+
+  /* Email button: copy the address and show "Copied"; the mailto link still opens a mail app if there is one. */
+  const email = document.getElementById("email"), emailStatus = document.getElementById("email-status");
+  let copiedTimer;
+  email.addEventListener("click", () => {
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(email.href.replace("mailto:", "")).then(() => {
+      email.classList.add("is-copied");
+      emailStatus.textContent = "Email address copied";
+      clearTimeout(copiedTimer);
+      copiedTimer = setTimeout(() => { email.classList.remove("is-copied"); emailStatus.textContent = ""; }, 1800);
+    }, () => {});
+  });
+
   /* ---------------- projects ---------------- */
   const S = window.SITE || {};
   const grid = document.getElementById("grid");
@@ -407,13 +450,13 @@
   }
 
   /* ---------------- boot ---------------- */
-  const remeasure = () => { measureScene(); measureEnd(); measureCard(); frameGolf(); last = -1; };
+  const remeasure = () => { measureScene(); measureEnd(); measureCard(); frameGolf(); last = -1; markCheck(); };
   measureScene(); measureEnd(); measureCard();
   addEventListener("resize", remeasure);
   phone.addEventListener("change", remeasure);
   addEventListener("load", remeasure);
   if (document.fonts) document.fonts.ready.then(remeasure);
-  readScroll(); current = target; render(current); navCheck();
+  readScroll(); current = target; render(current); navCheck(); markCheck();
   requestAnimationFrame(tick);
   loadProjects();
 })();
