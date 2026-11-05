@@ -125,9 +125,9 @@ window.SceneMascots = (() => {
         // The flagstick stands in the cup: its pole is 4 of the flag's 40 units from the left.
         const fw = s * 0.9, fh = fw * 2.5;
         Object.assign(flag.style, { width: fw + "px", transform: `translate3d(${(cx - fw * 0.1).toFixed(1)}px, ${(cy - fh * 0.98).toFixed(1)}px, 0)` });
-        // The ball stands just behind and to the right of the cup, its left hand (arm raised 120 degrees) on the pole.
+        // The ball stands just behind and to the left of the cup, its right hand (arm raised 120 degrees) on the pole.
         const gx = golf.offsetLeft + cx, gy = golf.offsetTop + cy;
-        stand = { x: gx - s * 0.115, y: gy - s * 1.08 };
+        stand = { x: gx - s * 0.885, y: gy - s * 1.08 };
       }
 
       G = {
@@ -245,10 +245,10 @@ window.SceneMascots = (() => {
         flip = g.stand.x < g.sit.x;
         ps = { armL: 35, armR: 35, ...run(t * 22) };
       } else {
-        // Tending the flag: the left hand goes to the pole. The free hand waves now and then (site.css).
+        // Tending the flag: the right hand goes to the pole. The free hand waves now and then (site.css).
         const r = seg(p, 0.86, 0.9);
         x = g.stand.x; y = g.stand.y;
-        ps = { armL: lerp(35, 120, r), armR: 20 }; cls = r >= 1 ? "is-tending" : "";
+        ps = { armL: 20, armR: lerp(35, 120, r) }; cls = r >= 1 ? "is-tending" : "";
       }
       y += w.stageY;
       if (w.hand > 0 && w.tip) {
@@ -276,7 +276,7 @@ window.SceneMascots = (() => {
         { o: seg(p, 0.27, 0.31) * (1 - seg(p, 0.36, 0.4)), at: g.point, flip: !g.phone, ps: g.phone ? { armL: 20, armR: 40 } : { armL: 20, armR: 100 } },
         { o: seg(p, 0.52, 0.56) * (1 - seg(p, 0.57, 0.59)), at: g.side, ps: { armL: 15, armR: 15 } },
         { o: seg(p, 0.6, 0.63) * (1 - seg(p, 0.73, 0.77)), at: g.sit, ps: { armL: 20, armR: 20 } },
-        { o: seg(p, 0.86, 0.9) * (1 - seg(w.hand, 0, 0.4)), at: { x: g.stand.x, y: g.stand.y + w.stageY }, ps: { armL: 120, armR: 20 } }
+        { o: seg(p, 0.86, 0.9) * (1 - seg(w.hand, 0, 0.4)), at: { x: g.stand.x, y: g.stand.y + w.stageY }, ps: { armL: 20, armR: 120 } }
       ];
       // Past the scene, it hangs still from the bottom of the (already full) gold line.
       if (w.tip && w.hand >= 0.5) spots.push({ o: 1, at: { x: w.tip.x - 0.77 * g.s, y: w.tip.y - 0.4 * g.s }, ps: { armL: 22, armR: 165 } });
@@ -305,7 +305,7 @@ window.SceneMascots = (() => {
       if (state === "hit") {
         // Scrolled far either way while the hit plays: drop the clock and let scroll place the ball.
         if (p < 0.42) reset();
-        else if (p > 0.72) { stop(); state = "landed"; }
+        else if (p > 0.72) { stop(); soft.forEach(a => a.cancel()); soft = []; state = "landed"; }
         else return;
       }
       // Scrolling back to the card brings the ball home and re-arms the bat.
