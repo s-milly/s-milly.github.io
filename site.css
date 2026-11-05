@@ -240,7 +240,6 @@ a { color: inherit; }
 .tl__item {
   display: grid; grid-template-columns: var(--date) var(--rail) minmax(0, 1fr);
   padding-bottom: 52px; position: relative;
-  transition: opacity .5s var(--ease), transform .5s var(--ease);
 }
 .tl__item:last-child { padding-bottom: 0; }
 .tl__item::before {
@@ -279,7 +278,6 @@ a { color: inherit; }
 .tl__points { margin: 4px 0 0; padding-left: 18px; color: var(--ink-soft); font-size: 15px; line-height: 1.6; display: grid; gap: 10px; max-width: 62ch; }
 .tl__points li::marker { color: var(--accent); }
 /* armed by JS only, so the list is complete without it */
-.tl.is-armed .tl__item:not(.is-in) { opacity: 0; transform: translateY(18px); }
 
 /* ---------- projects ---------- */
 .projects { padding: clamp(110px, 16vh, 180px) var(--gutter) clamp(80px, 12vh, 140px); position: relative; z-index: 1; background: var(--canvas); }

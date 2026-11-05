@@ -441,8 +441,6 @@
       // The fill runs from 10px below the top to 10px above the bottom; a dot lights once the tip reaches its centre.
       const tip = 10 + s * (tl.offsetHeight - 20);
       for (const it of items) it.classList.toggle("is-lit", tip >= it.offsetTop + 14);
-      // Jobs fade in a little before the gold line reaches them: once their top passes 88% of the screen height.
-      for (const it of items) if (it.getBoundingClientRect().top < innerHeight * 0.88) it.classList.add("is-in");
     };
     let queued = false;
     addEventListener("scroll", () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; update(); }); } }, { passive: true });
