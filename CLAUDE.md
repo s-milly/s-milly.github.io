@@ -3,7 +3,7 @@
 Static GitHub Pages site (no build step). Design brief and decisions: `docs/BRIEF.md`.
 
 - `index.html`: markup. Sections in order: pinned scroll scene (#about: intro, student, baseball, golf), #experience timeline, #projects grid, #contact.
-- `site.js`: scene engine (scroll progress lerped; `measureCard` places the baseball card, which turns over on the student beat, and the photo window grows out of the card's photo area at the merge), suit-to-uniform merge, timeline reveal and details toggles, GitHub repo loader, and the signature "pitch" (clicking a project throws a baseball at the card, then opens it).
+- `site.js`: scene engine (scroll progress lerped; `measureCard` places the baseball card, which turns over once on the student beat and stays on its back; the back's text fades and the photo window grows out of the card's outline at the merge), suit-to-uniform merge, timeline reveal and details toggles, GitHub repo loader, and the signature "pitch" (clicking a project throws a baseball at the card, then opens it).
 - `mascots.js`: the two scene mascots, built in JS and appended to the stage. The ball sits on the card, pushes it over, points at the student line and is pitched into the baseball photo, all scrubbed by scroll; the bat walks in and the hit plays once on a clock (WAAPI), then both leave. Scrolling back above the card merge resets them. Reduced motion: still poses that fade.
 - `site.css`: tokens on `:root` (dark, Clarion gold accent). Phone layout under `max-width: 760px`.
 - `projects.js`: user-editable config (`githubUser`, `featured`, `hide`, `projects`).

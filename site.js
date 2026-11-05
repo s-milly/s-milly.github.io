@@ -17,6 +17,7 @@
   const card = scene.querySelector(".tcard");
   const cardInner = card.querySelector(".tcard__inner");
   const cardBack = card.querySelector(".tcard__back");
+  const backText = cardBack.children;
   const cardImg = card.querySelector(".tcard__photo img");
   const lines = scene.querySelector(".wm__grid");
   const introPanel = scene.querySelector(".panel--intro");
@@ -26,12 +27,13 @@
     el, k: el.dataset.panel.split(",").map(Number)
   }));
 
-  /* The card is placed from the stage size. Its photo area is where the photo window
-     sits until the merge: [top, right, bottom, left] insets in % of the stage, a corner
-     radius in px, and the field's offset (% of stage) so Shawn's face lines up when
-     the baseball photo takes over. Card proportions match the cqw sizes in site.css. */
-  const CARD = { ratio: 0.69, pad: 0.034, photo: 1.132, radius: 0.017 };
-  let REG = { box: [10, 10, 10, 60], r: 9, tx: 0, ty: 0 };
+  /* The card is placed from the stage size. The photo window sits under the card's
+     outline until the merge: [top, right, bottom, left] insets in % of the stage and a
+     corner radius in px. `photo` is the card's photo area, where the headshot plate sits,
+     and tx/ty offset the field (% of stage) so Shawn is centred in the card as the
+     baseball photo opens. Card proportions match the cqw sizes in site.css. */
+  const CARD = { ratio: 0.69, pad: 0.034, photo: 1.132, radius: 0.051 };
+  let REG = { box: [10, 10, 10, 60], photo: [10, 10, 10, 60], r: 9, tx: 0, ty: 0 };
   function measureCard() {
     const W = stageW, H = stageH;
     let w, h, x, y;
@@ -55,7 +57,8 @@
     const R = 100 - L - pw / W * 100, B = 100 - T - ph / H * 100;
     const hPct = ph / H * 100, cx = L + pw / W * 50;
     REG = {
-      box: [T, R, B, L], r: Math.round(w * CARD.radius),
+      box: [y / H * 100, 100 - (x + w) / W * 100, 100 - (y + h) / H * 100, x / W * 100],
+      photo: [T, R, B, L], r: Math.round(w * CARD.radius),
       tx: phone.matches ? cx - 52 : cx - 57,
       ty: phone.matches ? T + 0.44 * hPct - 16 : T + 0.325 * hPct - 18
     };
@@ -80,16 +83,21 @@
     const f = frameAt(p);
     let [t, r, b, l] = f.box;
 
-    // The card turns over for the student beat and keeps turning the same way back to
-    // the front before the merge. Under reduced motion the back fades in instead.
-    const flipTo = seg(p, 0.16, 0.27), flipBack = seg(p, 0.35, 0.41);
-    const ang = 180 * (flipTo + flipBack);
+    // The card turns over once, for the student beat, and stays on its back. Before the
+    // merge the back's text fades, leaving a blank card that opens into the baseball photo.
+    // Under reduced motion the back fades in instead of turning.
+    const flipTo = seg(p, 0.16, 0.27);
+    const ang = 180 * flipTo;
     const facing = Math.abs(Math.cos(ang * Math.PI / 180));
+    // How much of the front (and its headshot) is showing.
+    const front = reduce.matches ? 1 - flipTo : clamp(Math.cos(ang * Math.PI / 180) * 3);
+    const blank = 1 - seg(p, 0.36, 0.41);
+    for (const el of backText) el.style.opacity = blank;
     if (reduce.matches) {
       cardInner.style.transform = "none";
-      cardBack.style.opacity = flipTo - flipBack;
+      cardBack.style.opacity = flipTo;
     } else {
-      cardInner.style.transform = `rotateY(${ang}deg) scale(${1 + 0.04 * Math.sin(Math.PI * (flipTo + flipBack))})`;
+      cardInner.style.transform = `rotateY(${ang}deg) scale(${1 + 0.04 * Math.sin(Math.PI * flipTo)})`;
       cardBack.style.opacity = "";
       // The photo window sits under the card. While it turns, shrink the window to stay
       // inside the card's outline so the flat photo never peeks out at the edges.
@@ -100,7 +108,7 @@
         t += ch * (1 - sy) / 2; b += ch * (1 - sy) / 2;
       }
     }
-    if (mascots) mascots.render(p, ang, 1 + 0.04 * Math.sin(Math.PI * (flipTo + flipBack)));
+    if (mascots) mascots.render(p, ang, 1 + 0.04 * Math.sin(Math.PI * flipTo));
     const gone = seg(p, 0.42, 0.44);
     card.style.opacity = 1 - gone;
     card.style.visibility = gone >= 1 ? "hidden" : "visible";
@@ -112,15 +120,15 @@
     const px = (v, s) => Math.round(v * s / 100);
     win.style.clipPath = `inset(${px(t, stageH)}px ${px(r, stageW)}px ${px(b, stageH)}px ${px(l, stageW)}px round ${f.r}px)`;
     const bleed = seg(p, 0.42, 0.56);
-    // Suit to uniform: the headshot holds the card's photo area, swells and fades,
-    // while the field zooms out from Shawn's face.
+    // The headshot plate holds the card's photo area while the front shows. Once the card
+    // is on its back it stays faint, and it is gone by the end of the merge.
     const fade = seg(p, 0.43, 0.53);
-    const sb = REG.box;
+    const sb = REG.photo;
     // Overscan by 1% so rounding never leaves a seam; the window clip trims it.
     suit.style.left = (sb[3] - 1) + "%"; suit.style.top = (sb[0] - 1) + "%";
     suit.style.width = (102 - sb[1] - sb[3]) + "%"; suit.style.height = (102 - sb[0] - sb[2]) + "%";
-    // Faint, not hidden, while the card is edge-on, so it repaints cleanly on iOS.
-    suit.style.opacity = (1 - fade) * (reduce.matches ? 1 : Math.max(0.02, clamp(facing * 3)));
+    // Faint, not hidden, while the front is away, so it repaints cleanly on iOS.
+    suit.style.opacity = (1 - fade) * Math.max(0.02, front);
     suit.style.visibility = fade >= 1 ? "hidden" : "visible";
     suit.style.transform = reduce.matches ? "none" : `translateY(${-9 * seg(p, 0.42, 0.53)}%) scale(${lerp(1, 1.18, seg(p, 0.42, 0.53))})`;
     const zoom = reduce.matches ? 1 : lerp(1.45, 1, seg(p, 0.42, 0.6));
