@@ -81,6 +81,12 @@ a { color: inherit; }
   clip-path: inset(13% 7% 13% 56% round 16px);
   will-change: clip-path;
 }
+/* 1px white edge on the photo frame after the merge, so dark parts of a photo do not
+   run into the page. Its own layer because the window's clip-path would cut an outline. */
+.frame-ring {
+  position: absolute; left: 0; top: 0; pointer-events: none; opacity: 0;
+  border: 1px solid oklch(1 0 0 / .1);
+}
 .plate { position: absolute; inset: 0; }
 .plate--field { will-change: transform; transform-origin: 57% 18%; }
 .plate picture, .plate img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
@@ -137,6 +143,7 @@ a { color: inherit; }
   box-shadow: 0 2.4cqw 7cqw rgba(0, 0, 0, .5);
 }
 .tcard__photo { position: absolute; left: 3.4cqw; right: 3.4cqw; top: 3.4cqw; height: 113.2cqw; border-radius: 1.7cqw; overflow: hidden; background: #3a3a38; }
+.tcard__photo::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px oklch(0 0 0 / .1); pointer-events: none; }
 .tcard__photo .ph { position: absolute; display: block; max-width: none; }
 .tcard__tag {
   position: absolute; left: 6.4cqw; top: 6.4cqw;

@@ -9,6 +9,7 @@
   /* ---------------- the continuous scene ---------------- */
   const scene = document.querySelector(".scene");
   const win = scene.querySelector(".window");
+  const ring = scene.querySelector(".frame-ring");
   const field = scene.querySelector(".plate--field");
   const suit = scene.querySelector(".plate--suit");
   const golf = scene.querySelector(".plate--golf");
@@ -42,12 +43,12 @@
     END = phone.matches
       ? { box: [9, 16 / W * 100, 26, 16 / W * 100], r: 18, tx: 0, ty: 0 }
       : { box: [11, clamp(W * 0.06, 16, 96) / W * 100, 9, 48], r: 22, tx: 13, ty: 7 };
-    // Desktop: the golf photo fills the frame itself, so the whole green fits, with the
-    // white ball by the cup. On phones it stays stage-sized and the frame crops it.
+    // Desktop: the golf photo is sized to the frame itself (2px over, so rounding never
+    // shows the field behind it at an edge). On phones it stays stage-sized and the frame crops it.
     const [t, r, b, l] = END.box;
     Object.assign(golf.style, phone.matches
       ? { top: "", right: "", bottom: "", left: "" }
-      : { top: t + "%", right: r + "%", bottom: b + "%", left: l + "%" });
+      : { top: `calc(${t}% - 2px)`, right: `calc(${r}% - 2px)`, bottom: `calc(${b}% - 2px)`, left: `calc(${l}% - 2px)` });
   }
   function measureCard() {
     const W = stageW, H = stageH;
@@ -133,7 +134,15 @@
 
     // Whole pixels: a fractional clip edge anti-aliases differently per GPU tile and shows as a 1px step.
     const px = (v, s) => Math.round(v * s / 100);
-    win.style.clipPath = `inset(${px(t, stageH)}px ${px(r, stageW)}px ${px(b, stageH)}px ${px(l, stageW)}px round ${f.r}px)`;
+    const it = px(t, stageH), ir = px(r, stageW), ib = px(b, stageH), il = px(l, stageW);
+    win.style.clipPath = `inset(${it}px ${ir}px ${ib}px ${il}px round ${f.r}px)`;
+    // The frame's edge comes in once the card has gone, and follows the window as it opens.
+    const edge = seg(p, 0.44, 0.5);
+    ring.style.opacity = edge;
+    if (edge > 0) Object.assign(ring.style, {
+      transform: `translate(${il}px, ${it}px)`, width: stageW - il - ir + "px",
+      height: stageH - it - ib + "px", borderRadius: f.r + "px"
+    });
     // The headshot plate holds the card's photo area while the front shows. Once the card
     // is on its back it stays faint, and it is gone by the end of the merge.
     const fade = seg(p, 0.43, 0.53);
@@ -197,20 +206,24 @@
     requestAnimationFrame(tick);
   }
 
-  /* Golf framing: fit the frame so Shawn's cap and the white ball rolling
-     toward the cup both stay inside it, whatever the frame shape. Positions are fractions of the desktop golf image height. */
+  /* Golf framing (desktop): zoom the photo so the frame holds the part that matters,
+     from just above Shawn's cap down past the cup, and from the white ball rolling
+     toward the cup across to the friend crouching on the right. Never smaller than a
+     cover fit. Fractions of the desktop golf image (1170 x 1300). Phones keep the CSS crop. */
   const golfImg = golf.querySelector("img");
-  const GOLF = { cap: 555 / 1300, ball: 1045 / 1300 };
+  const GOLF = { x0: 380 / 1170, x1: 1, y0: 520 / 1300, y1: 1180 / 1300 };
   function frameGolf() {
-    if (phone.matches || !golfImg.naturalWidth) { golfImg.style.objectPosition = ""; return; }
+    const st = golfImg.style;
+    if (phone.matches || !golfImg.naturalWidth) { st.left = st.top = st.width = st.height = ""; return; }
     const W = golf.clientWidth, H = golf.clientHeight;
-    const scale = Math.max(W / golfImg.naturalWidth, H / golfImg.naturalHeight);
-    const I = golfImg.naturalHeight * scale;
-    if (I <= H) return;
-    const top = 12, bottom = H - 20;                       // a little room inside the frame
-    const mid = (GOLF.cap + GOLF.ball) / 2 * I;
-    const off = clamp(mid - (top + bottom) / 2, 0, I - H);
-    golfImg.style.objectPosition = `50% ${(off / (I - H)) * 100}%`;
+    const iw = golfImg.naturalWidth, ih = golfImg.naturalHeight;
+    const rw = (GOLF.x1 - GOLF.x0) * iw, rh = (GOLF.y1 - GOLF.y0) * ih;
+    const s = Math.max(W / iw, H / ih, Math.min(W / rw, H / rh));
+    const cx = (GOLF.x0 + GOLF.x1) / 2 * iw * s, cy = (GOLF.y0 + GOLF.y1) / 2 * ih * s;
+    Object.assign(st, {
+      width: iw * s + "px", height: ih * s + "px",
+      left: clamp(W / 2 - cx, W - iw * s, 0) + "px", top: clamp(H / 2 - cy, H - ih * s, 0) + "px"
+    });
   }
   golfImg.addEventListener("load", frameGolf);
   if (golfImg.complete) frameGolf();
