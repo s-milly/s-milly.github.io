@@ -12,8 +12,6 @@
   const field = scene.querySelector(".plate--field");
   const suit = scene.querySelector(".plate--suit");
   const golf = scene.querySelector(".plate--golf");
-  const scrim = scene.querySelector(".scrim");
-  const golfScrim = scene.querySelector(".scrim--golf");
   const card = scene.querySelector(".tcard");
   const cardInner = card.querySelector(".tcard__inner");
   const cardBack = card.querySelector(".tcard__back");
@@ -34,6 +32,23 @@
      baseball photo opens. Card proportions match the cqw sizes in site.css. */
   const CARD = { ratio: 0.69, pad: 0.034, photo: 1.132, radius: 0.051 };
   let REG = { box: [10, 10, 10, 60], photo: [10, 10, 10, 60], r: 9, tx: 0, ty: 0 };
+  /* Where the photo window settles after the merge: a rounded frame with the dark page
+     around it, not full bleed. [top, right, bottom, left] insets in % of the stage, corner
+     radius in px, and tx/ty offset the field (% of stage) so Shawn's cap stays in frame.
+     Desktop: right of the text, inside the nav gutter. Phone: above the text. */
+  let END = { box: [11, 6, 9, 48], r: 22, tx: 13, ty: 7 };
+  function measureEnd() {
+    const W = stageW;
+    END = phone.matches
+      ? { box: [9, 16 / W * 100, 26, 16 / W * 100], r: 18, tx: 0, ty: 0 }
+      : { box: [11, clamp(W * 0.06, 16, 96) / W * 100, 9, 48], r: 22, tx: 13, ty: 7 };
+    // Desktop: the golf photo fills the frame itself, so the whole green fits, with the
+    // white ball by the cup. On phones it stays stage-sized and the frame crops it.
+    const [t, r, b, l] = END.box;
+    Object.assign(golf.style, phone.matches
+      ? { top: "", right: "", bottom: "", left: "" }
+      : { top: t + "%", right: r + "%", bottom: b + "%", left: l + "%" });
+  }
   function measureCard() {
     const W = stageW, H = stageH;
     let w, h, x, y;
@@ -74,8 +89,8 @@
   function frameAt(p) {
     const t = seg(p, 0.42, 0.56);
     return {
-      box: REG.box.map(v => lerp(v, 0, t)),
-      r: lerp(REG.r, 0, t), tx: lerp(REG.tx, 0, t), ty: lerp(REG.ty, 0, t)
+      box: REG.box.map((v, i) => lerp(v, END.box[i], t)),
+      r: lerp(REG.r, END.r, t), tx: lerp(REG.tx, END.tx, t), ty: lerp(REG.ty, END.ty, t)
     };
   }
 
@@ -119,7 +134,6 @@
     // Whole pixels: a fractional clip edge anti-aliases differently per GPU tile and shows as a 1px step.
     const px = (v, s) => Math.round(v * s / 100);
     win.style.clipPath = `inset(${px(t, stageH)}px ${px(r, stageW)}px ${px(b, stageH)}px ${px(l, stageW)}px round ${f.r}px)`;
-    const bleed = seg(p, 0.42, 0.56);
     // The headshot plate holds the card's photo area while the front shows. Once the card
     // is on its back it stays faint, and it is gone by the end of the merge.
     const fade = seg(p, 0.43, 0.53);
@@ -139,8 +153,6 @@
     field.style.opacity = lerp(0.02, 1, seg(p, 0.41, 0.45));
     const g = seg(p, 0.76, 0.88);
     golf.style.clipPath = `inset(${(1 - g) * 100}% 0 0 0)`;
-    scrim.style.opacity = bleed * (1 - g);
-    golfScrim.style.opacity = g;
 
     for (const pn of panels) {
       const [a0, a1, o0, o1] = pn.k;
@@ -185,9 +197,8 @@
     requestAnimationFrame(tick);
   }
 
-  /* Golf framing: fit the window so Shawn's cap clears the menu and the white
-     ball rolling toward the cup stays above the bottom edge, whatever the
-     window shape. Positions are fractions of the desktop golf image height. */
+  /* Golf framing: fit the frame so Shawn's cap and the white ball rolling
+     toward the cup both stay inside it, whatever the frame shape. Positions are fractions of the desktop golf image height. */
   const golfImg = golf.querySelector("img");
   const GOLF = { cap: 555 / 1300, ball: 1045 / 1300 };
   function frameGolf() {
@@ -196,14 +207,12 @@
     const scale = Math.max(W / golfImg.naturalWidth, H / golfImg.naturalHeight);
     const I = golfImg.naturalHeight * scale;
     if (I <= H) return;
-    const top = 70, bottom = H - 36;                       // clear of the menu, clear of the edge
+    const top = 12, bottom = H - 20;                       // a little room inside the frame
     const mid = (GOLF.cap + GOLF.ball) / 2 * I;
     const off = clamp(mid - (top + bottom) / 2, 0, I - H);
     golfImg.style.objectPosition = `50% ${(off / (I - H)) * 100}%`;
   }
   golfImg.addEventListener("load", frameGolf);
-  addEventListener("resize", frameGolf);
-  phone.addEventListener("change", frameGolf);
   if (golfImg.complete) frameGolf();
 
   /* ---------------- nav ---------------- */
@@ -376,8 +385,8 @@
   }
 
   /* ---------------- boot ---------------- */
-  const remeasure = () => { measureScene(); measureCard(); last = -1; };
-  measureScene(); measureCard();
+  const remeasure = () => { measureScene(); measureEnd(); measureCard(); frameGolf(); last = -1; };
+  measureScene(); measureEnd(); measureCard();
   addEventListener("resize", remeasure);
   phone.addEventListener("change", remeasure);
   addEventListener("load", remeasure);

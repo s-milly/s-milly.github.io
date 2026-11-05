@@ -89,14 +89,6 @@ a { color: inherit; }
 .plate--suit .ph, .tcard__photo .ph { object-position: 50% 28%; }
 .plate--golf { clip-path: inset(100% 0 0 0); will-change: clip-path; }
 .plate--golf .ph { object-position: 50% 77%; }
-.scrim {
-  position: absolute; inset: 0; opacity: 0; pointer-events: none;
-  background: linear-gradient(90deg, rgba(6, 9, 14, .86) 0%, rgba(6, 9, 14, .62) 34%, rgba(6, 9, 14, 0) 62%);
-}
-/* golf: the left-side fade ends before the white ball on the green (about 41% across) */
-.scrim--golf {
-  background: linear-gradient(90deg, rgba(6, 9, 14, .86) 0%, rgba(6, 9, 14, .62) 24%, rgba(6, 9, 14, 0) 39%);
-}
 
 .panel {
   position: absolute; left: var(--gutter); top: calc(50% + 3%);
@@ -116,8 +108,6 @@ a { color: inherit; }
 .feats li { border-top: 1px solid rgba(238, 241, 245, .14); padding-top: 16px; }
 .feats b { display: block; font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; color: var(--accent); font-size: clamp(30px, 2.8vw, 42px); line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .feats span { display: block; margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
-.panel--on-photo p { color: rgba(238, 241, 245, .86); }
-.panel--on-photo h2 { text-shadow: 0 2px 24px rgba(0, 0, 0, .35); }
 
 .nowrap { white-space: nowrap; }
 
@@ -376,7 +366,6 @@ a.card.is-strike { border-color: var(--accent); }
   .plate--field { transform-origin: 52% 16%; }
   .plate--suit .ph { object-position: 50% 30%; }
   .plate--golf .ph { object-position: 50% 50%; }
-  .scrim, .scrim--golf { background: linear-gradient(0deg, rgba(6, 9, 14, .92) 0%, rgba(6, 9, 14, .72) 24%, rgba(6, 9, 14, 0) 46%); }
   .panel { left: 16px; right: 16px; width: auto; top: auto; bottom: 28px; transform: none; }
   .panel--intro { bottom: 24px; }
   .panel h1 { font-size: clamp(48px, 14vw, 64px); }

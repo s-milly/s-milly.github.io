@@ -28,7 +28,7 @@ Interviewed. Answers below are Shawn's own words where quoted; authored decision
 |---|---|---|
 | 1 Intro | Recognition, "that's him" | Name set large, his photo held in a quiet window beside it |
 | 2 Student | Focus, credibility | Window narrows, a faint neural-net line drawing assembles behind the copy |
-| 3 Baseball | Lift (the peak) | The window opens to full bleed, the night field fills the screen |
+| 3 Baseball | Lift (the peak) | The window opens into a large rounded frame, the night field fills it and the dark page stays around it |
 | 4 Golf | Warmth, ease | Sunset photo rises over the field like the light changing |
 | 5 Projects | Clarity, invitation | Every project visible at once; clicking throws a pitch at it |
 | 6 Contact | Resolution | One clear line and three actions, holds on screen |
@@ -40,4 +40,4 @@ Interviewed. Answers below are Shawn's own words where quoted; authored decision
 It's the site where you click a project and he throws a strike at it.
 
 ## Authored silence
-A short hold after the field opens full bleed (before the golf wipe) is intentional, not dead scroll.
+A short hold after the field opens (before the golf wipe) is intentional, not dead scroll.

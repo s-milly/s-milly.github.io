@@ -82,9 +82,9 @@ window.SceneMascots = (() => {
       const rect = el => { const r = el.getBoundingClientRect(); return { l: r.left - sr.left, r: r.right - sr.left, t: r.top - sr.top - ty, b: r.bottom - sr.top - ty }; };
       const para = rect(studentPanel.querySelector(".feats")), head = rect(studentPanel.querySelector("h2"));
 
-      // The bat stands in open grass to the right of Shawn; the ball meets the barrel at the
+      // The bat stands in open grass to the right of Shawn, inside the photo frame; the ball meets the barrel at the
       // end of the swing (72 units long from the feet, swung 70 degrees to the left).
-      const spot = phone ? { x: W - bs - 6, y: H * 0.17 } : { x: W * 0.8, y: H * 0.5 };
+      const spot = phone ? { x: W - bs - 22, y: H * 0.17 } : { x: W * 0.8, y: H * 0.5 };
       const k = bs / 100, a = -70 * Math.PI / 180, reach = 52;
       const contact = { x: spot.x + (50 + Math.sin(a) * reach) * k, y: spot.y + (84 - Math.cos(a) * reach) * k };
       const fs = 0.85;                                      // the ball is a little smaller in flight
