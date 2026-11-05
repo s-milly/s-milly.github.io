@@ -80,7 +80,7 @@ window.SceneMascots = (() => {
       // Panels are moved with `translate`; take it back out so the anchor is the resting spot.
       const ty = parseFloat((studentPanel.style.translate || "0 0").split(" ")[1]) || 0;
       const rect = el => { const r = el.getBoundingClientRect(); return { l: r.left - sr.left, r: r.right - sr.left, t: r.top - sr.top - ty, b: r.bottom - sr.top - ty }; };
-      const para = rect(studentPanel.querySelector("p")), head = rect(studentPanel.querySelector("h2"));
+      const para = rect(studentPanel.querySelector(".feats")), head = rect(studentPanel.querySelector("h2"));
 
       // The bat stands in open grass to the right of Shawn; the ball meets the barrel at the
       // end of the swing (72 units long from the feet, swung 70 degrees to the left).

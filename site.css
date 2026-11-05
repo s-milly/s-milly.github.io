@@ -111,6 +111,11 @@ a { color: inherit; }
 .panel p { color: var(--ink-soft); margin-top: 20px; max-width: 46ch; }
 .panel .role { color: var(--accent); font-weight: 500; font-size: 15px; letter-spacing: .02em; margin-top: 28px; }
 .panel .lede { color: var(--ink); opacity: .82; font-size: 18px; margin-top: 14px; }
+/* Academic achievements on the student beat: a two by two grid of gold figures. */
+.feats { list-style: none; margin: 32px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 36px; max-width: 560px; }
+.feats li { border-top: 1px solid rgba(238, 241, 245, .14); padding-top: 16px; }
+.feats b { display: block; font-family: var(--font-display); font-weight: 700; letter-spacing: -0.03em; color: var(--accent); font-size: clamp(30px, 2.8vw, 42px); line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.feats span { display: block; margin-top: 8px; color: var(--ink-soft); font-size: 15px; }
 .panel--on-photo p { color: rgba(238, 241, 245, .86); }
 .panel--on-photo h2 { text-shadow: 0 2px 24px rgba(0, 0, 0, .35); }
 
@@ -378,6 +383,10 @@ a.card.is-strike { border-color: var(--accent); }
   .wm__grid { --cell: 40px; }
   .panel h2 { font-size: 30px; }
   .panel p { margin-top: 12px; font-size: 15px; }
+  .feats { margin-top: 16px; gap: 14px 20px; }
+  .feats li { padding-top: 10px; }
+  .feats b { font-size: 26px; }
+  .feats span { margin-top: 4px; font-size: 13px; }
   .panel .role { margin-top: 14px; font-size: 13px; }
   .panel .lede { font-size: 15px; margin-top: 8px; }
   .panel .actions { margin-top: 18px; }
