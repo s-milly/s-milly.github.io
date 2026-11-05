@@ -354,28 +354,33 @@ a.card.is-strike { border-color: var(--accent); }
 }
 
 /* ---------- skills ---------- */
-.skills { padding: 0 var(--gutter) clamp(110px, 16vh, 180px); position: relative; z-index: 1; background: var(--canvas); }
-.skills h2 { font-size: clamp(44px, 6vw, 88px); line-height: .95; margin-bottom: 48px; }
-.skills__groups { display: grid; gap: 44px; }
-.skills__group h3 { margin: 0 0 16px; color: var(--accent); font: 600 13px/1.2 var(--font-text); letter-spacing: .12em; text-transform: uppercase; }
-.skills__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
-.skill {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
-  min-height: 112px; padding: 18px 10px; border-radius: var(--radius);
-  background: var(--surface); border: 1px solid var(--line);
-  color: var(--ink); text-align: center; font-size: 14px; line-height: 1.3;
-}
-.skill svg { width: 30px; height: 30px; fill: currentColor; flex: none; }
+/* One drifting row of logos per résumé group, alternating direction. site.js repeats each set
+   until it is wider than the screen, adds a hidden copy, and sets --dur so every row moves at
+   the same speed. Without JS, or with reduced motion, the rows are plain wrapped lists. */
+.skills { padding: 0 0 clamp(110px, 16vh, 180px); position: relative; z-index: 1; background: var(--canvas); overflow: hidden; }
+.skills h2 { font-size: clamp(44px, 6vw, 88px); line-height: .95; margin: 0 var(--gutter) 48px; }
+.skills__row + .skills__row { margin-top: 40px; }
+.skills__row h3 { margin: 0 var(--gutter) 18px; color: var(--accent); font: 600 13px/1.2 var(--font-text); letter-spacing: .12em; text-transform: uppercase; }
+.marquee { padding: 0 var(--gutter); }
+.marquee__track { display: flex; }
+.marquee.is-moving .marquee__track { width: max-content; }
+.marquee__set { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 14px 48px; }
+.skill { display: flex; align-items: center; gap: 12px; white-space: nowrap; color: var(--ink); font: 500 20px/1.2 var(--font-display); letter-spacing: -0.01em; }
+.skill svg { width: 28px; height: 28px; fill: currentColor; flex: none; color: var(--ink-soft); }
 .skill svg.glyph { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.skill span { color: var(--ink-soft); }
-.skills__note { margin-top: 14px; color: var(--ink-soft); font-size: 15px; max-width: 62ch; }
-/* armed by JS only, so the section is complete without it */
-.skills.is-armed .skills__group { transition: opacity .3s ease-out, translate .3s ease-out, filter .3s ease-out; }
-.skills.is-armed .skills__group:not(.is-in) { opacity: 0; translate: 0 12px; filter: blur(4px); }
-@media (prefers-reduced-motion: reduce) {
-  .skills.is-armed .skills__group { transition: opacity .3s ease-out; }
-  .skills.is-armed .skills__group:not(.is-in) { translate: none; filter: none; }
+.skills__note { margin: 44px var(--gutter) 0; color: var(--ink-soft); font-size: 15px; max-width: 62ch; }
+
+.marquee.is-moving { padding: 6px 0;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 max(var(--gutter), 56px), #000 calc(100% - max(var(--gutter), 56px)), transparent);
+  mask: linear-gradient(90deg, transparent, #000 max(var(--gutter), 56px), #000 calc(100% - max(var(--gutter), 56px)), transparent); }
+.marquee.is-moving .marquee__set { flex-wrap: nowrap; padding-right: 48px; }
+.marquee.is-moving .marquee__track { animation: marquee var(--dur, 40s) linear infinite; }
+.marquee.is-moving[data-dir="right"] .marquee__track { animation-direction: reverse; }
+.marquee.is-paused .marquee__track { animation-play-state: paused; }
+@media (hover: hover) and (pointer: fine) {
+  .marquee.is-moving:hover .marquee__track { animation-play-state: paused; }
 }
+@keyframes marquee { to { transform: translateX(-50%); } }
 
 /* ---------- contact ---------- */
 .contact { padding: clamp(110px, 20vh, 200px) var(--gutter); border-top: 1px solid var(--line); min-height: 70vh; display: flex; flex-direction: column; justify-content: center; }
@@ -414,10 +419,11 @@ a.card.is-strike { border-color: var(--accent); }
   .foot { flex-direction: column; }
   .projects__head { margin-bottom: 32px; }
   .skills h2 { margin-bottom: 32px; }
-  .skills__groups { gap: 36px; }
-  .skills__list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-  .skill { min-height: 96px; padding: 14px 6px; font-size: 13px; gap: 10px; }
-  .skill svg { width: 26px; height: 26px; }
+  .skills__row + .skills__row { margin-top: 32px; }
+  .skill { font-size: 17px; gap: 10px; }
+  .skill svg { width: 24px; height: 24px; }
+  .marquee__set { gap: 12px 32px; }
+  .marquee.is-moving .marquee__set { padding-right: 32px; }
   .nav__exp { display: none; }
   .experience h2 { margin-bottom: 36px; }
   .tl { --rail: 28px; }
