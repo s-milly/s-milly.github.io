@@ -18,7 +18,7 @@
   const cardInner = card.querySelector(".tcard__inner");
   const cardBack = card.querySelector(".tcard__back");
   const cardImg = card.querySelector(".tcard__photo img");
-  const lines = scene.querySelector(".wm__field");
+  const lines = scene.querySelector(".wm__grid");
   const introPanel = scene.querySelector(".panel--intro");
   const studentPanel = scene.querySelector(".panel--student");
   const mascots = window.SceneMascots ? SceneMascots.create(scene.querySelector(".stage"), reduce) : null;
@@ -104,7 +104,7 @@
     const gone = seg(p, 0.42, 0.44);
     card.style.opacity = 1 - gone;
     card.style.visibility = gone >= 1 ? "hidden" : "visible";
-    // The field lines stay through the intro and student beats, easing closer as you scroll, and fade before the merge.
+    // The grid stays through the intro and student beats, easing closer as you scroll, and fade before the merge.
     lines.style.opacity = 1 - seg(p, 0.35, 0.41);
     lines.style.transform = reduce.matches ? "none" : `scale(${(1 + 0.1 * seg(p, 0, 0.41)).toFixed(4)})`;
 
