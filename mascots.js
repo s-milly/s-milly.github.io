@@ -1,5 +1,5 @@
 /* The two scene mascots. The baseball turns the card, points at the student line, is pitched
-   into the field photo and hit back onto the baseball heading by the bat. On the golf beat it
+   into the field photo and hit back by the bat to stand on "mound" in the baseball heading. On the golf beat it
    walks into the photo and tends the flag at the cup, and after the scene it leaps onto the
    gold line of the experience timeline and hangs from its tip. It never leaves the screen.
    Everything follows scroll progress (p, the same 0..1 value as the scene) except the hit and
@@ -100,11 +100,14 @@ window.SceneMascots = (() => {
       const para = toStage(studentPanel.querySelector(".feats").getBoundingClientRect(), sty);
       const head = toStage(studentPanel.querySelector("h2").getBoundingClientRect(), sty);
 
-      // The baseball heading's first line of text, where the ball lands after the hit.
+      // The "n" of "mound" in the baseball heading: the ball lands standing on it after the hit
+      // (its top is closed, unlike the "u" in the middle of the word).
       const h2 = basePanel.querySelector("h2"), range = document.createRange();
-      range.selectNodeContents(h2);
-      const line = toStage(range.getClientRects()[0] || h2.getBoundingClientRect(), shift(basePanel));
-      const capTop = line.t + parseFloat(getComputedStyle(h2).fontSize) * 0.2;
+      const text = h2.firstChild, at = text && text.nodeType === 3 ? text.data.indexOf("mound") : -1;
+      if (at >= 0) { range.setStart(text, at + 3); range.setEnd(text, at + 4); } else range.selectNodeContents(h2);
+      const word = toStage(range.getClientRects()[0] || h2.getBoundingClientRect(), shift(basePanel));
+      // Top of the lowercase letters (the x-height), measured down from the top of the text box.
+      const xTop = word.t + parseFloat(getComputedStyle(h2).fontSize) * 0.33;
 
       // The bat stands in open grass to the right of Shawn, inside the photo frame; the ball meets the barrel at the
       // end of the swing (72 units long from the feet, swung 70 degrees to the left).
@@ -138,8 +141,8 @@ window.SceneMascots = (() => {
         pushY: card.y + card.h * (phone ? 0.6 : 0.45) - h / 2,
         point: phone ? { x: 18, y: head.t - h - 4 } : { x: para.r + 8, y: para.t - h * 0.25 },
         contact: { x: contact.x - 50 * (s / 100), y: contact.y - 52 * (s / 100) },
-        // Sitting on the end of the heading's first line, legs hanging past the last letter so they cover no text.
-        sit: { x: line.r - s * 0.5, y: capTop - s * 0.76 },
+        // Standing on the "n" of "mound" (a pitcher's mound).
+        sit: { x: (word.l + word.r) / 2 - s / 2, y: xTop - s * 0.975 },
         // Reduced motion: the ball waits on the grass beside the bat instead of in the air.
         side: { x: spot.x - s * 0.95, y: spot.y + bh - h }
       };
@@ -234,10 +237,10 @@ window.SceneMascots = (() => {
       bat.style.visibility = "hidden";
       let x, y, flip = false, o = 1, cls = "", ps;
       if (p < 0.73) {
-        // Sitting on the heading, legs swinging. Scrolled back above the beat, it fades out with the heading.
+        // Standing on "mound". Scrolled back above the beat, it fades out with the heading.
         const vin = seg(p, 0.54, 0.6);
         x = g.sit.x; y = g.sit.y + (1 - vin) * 28; o = vin;
-        ps = { armL: 20, armR: 20 }; cls = "is-sitting";
+        ps = { armL: 20, armR: 20 };
       } else if (p < 0.86) {
         // Hops off the heading and walks into the golf photo, to the cup.
         const t = seg(p, 0.73, 0.86);
