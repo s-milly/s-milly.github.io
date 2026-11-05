@@ -406,45 +406,6 @@
     update();
   }
 
-  /* ---------------- skills marquee ---------------- */
-  // Each row repeats its set until it is wider than the row, then adds one hidden copy, so
-  // sliding the track by half loops without a seam. Rows move at one speed whatever their
-  // length, pause off screen, and stay still as wrapped lists under reduced motion.
-  {
-    const rows = [...document.querySelectorAll(".marquee")];
-    const SPEED = 36;   // px per second
-    const sets = rows.map(m => m.querySelector(".marquee__set"));
-    const base = sets.map(s => s.innerHTML);
-    const build = () => {
-      rows.forEach((m, i) => {
-        const track = m.querySelector(".marquee__track"), set = sets[i];
-        track.querySelectorAll("[data-clone]").forEach(n => n.remove());
-        set.innerHTML = base[i];
-        m.classList.remove("is-moving");
-        if (reduce.matches) return;
-        m.classList.add("is-moving");
-        for (let k = 1; set.scrollWidth < m.clientWidth && k < 8; k++) {
-          set.insertAdjacentHTML("beforeend", base[i].replace(/<li class="skill">/g, '<li class="skill" aria-hidden="true">'));
-        }
-        const copy = set.cloneNode(true);
-        copy.setAttribute("aria-hidden", "true"); copy.removeAttribute("aria-labelledby"); copy.dataset.clone = "";
-        track.appendChild(copy);
-        track.style.setProperty("--dur", (set.offsetWidth / SPEED).toFixed(1) + "s");
-      });
-    };
-    if (rows.length) {
-      build();
-      let w = innerWidth;
-      addEventListener("resize", () => { if (innerWidth !== w) { w = innerWidth; build(); } });
-      reduce.addEventListener("change", build);
-      if (document.fonts) document.fonts.ready.then(build);
-      if ("IntersectionObserver" in window) {
-        const io = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle("is-paused", !e.isIntersecting)));
-        rows.forEach(m => io.observe(m));
-      }
-    }
-  }
-
   /* ---------------- boot ---------------- */
   const remeasure = () => { measureScene(); measureEnd(); measureCard(); frameGolf(); last = -1; };
   measureScene(); measureEnd(); measureCard();
