@@ -191,11 +191,10 @@
 
   let target = 0, current = 0, last = -1, prev = 0, cardAng = 0, cardLift = 1, mLast = "";
   // Scene geometry, measured on load and resize rather than every frame.
-  let sceneTop = 0, sceneH = 1, total = 1, stageW = 1, stageH = 1;
+  let sceneTop = 0, total = 1, stageW = 1, stageH = 1;
   function measureScene() {
     stageW = win.clientWidth; stageH = win.clientHeight;
     sceneTop = scene.getBoundingClientRect().top + scrollY;
-    sceneH = scene.offsetHeight;
     // The last --hold vh of the scene keeps progress at 1, holding the golf beat in place.
     const hold = (parseFloat(getComputedStyle(scene).getPropertyValue("--hold")) || 0) * innerHeight / 100;
     total = Math.max(1, scene.offsetHeight - innerHeight - hold);
@@ -203,11 +202,6 @@
   // Progress follows scroll at one pace for the whole scene. site.css sets the scene height
   // so every beat gets the slower pace the card and student beats used to have.
   function readScroll() { target = clamp((scrollY - sceneTop) / total); }
-  // After the scene the stage scrolls up with the page, and the ball (fixed to the viewport) goes with it.
-  function mascotWorld() {
-    const end = sceneTop + sceneH - stageH;          // scroll position where the stage stops being pinned
-    return { stageY: -Math.max(0, scrollY - end) };
-  }
   function tick(time) {
     readScroll();
     // Catch-up rate is set per 60Hz frame and scaled by elapsed time, so the scene
@@ -220,8 +214,7 @@
     if (Math.abs(target - current) < 0.0004) current = target;
     if (current !== last) { render(current); last = current; }
     if (mascots) {
-      const key = current + "|" + scrollY;
-      if (key !== mLast) { mascots.render(current, cardAng, cardLift, mascotWorld()); mLast = key; }
+      if (current !== mLast) { mascots.render(current, cardAng, cardLift); mLast = current; }
     }
     requestAnimationFrame(tick);
   }

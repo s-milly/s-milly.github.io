@@ -72,8 +72,13 @@ window.SceneMascots = (() => {
   function create(stage, reduce, { layer = document.body, golf } = {}) {
     const ball = make("mascot--ball", BALL), bat = make("mascot--bat", BAT), burst = make("mascot--burst", BURST);
     const flag = make("mascot--flag", FLAG);
-    // The ball is fixed to the viewport so it can follow the page past the pinned stage.
+    // The ball is fixed to the viewport so its flights are not cut off by the stage's edge. At the flag it
+    // moves into the stage, so it scrolls away with the golf photo natively instead of trailing it a frame behind.
     layer.append(ball);
+    const home = inStage => {
+      const want = inStage ? stage : layer;
+      if (ball.parentNode !== want) { want.append(ball); ball.classList.toggle("is-staged", inStage); }
+    };
     stage.append(bat, burst);
     if (golf) golf.append(flag);
     const q = (el, s) => el.querySelector(s);
@@ -231,8 +236,8 @@ window.SceneMascots = (() => {
     }
 
     // Where the ball is once it has been hit back: on the heading, walking to the cup, and tending the flag
-    // (past the scene it stays at the flag and scrolls up with the photo).
-    function after(p, w) {
+    // (from there it lives in the stage, so past the scene it scrolls up with the photo).
+    function after(p) {
       const g = G;
       bat.style.visibility = "hidden";
       let x, y, flip = false, o = 1, cls = "", ps;
@@ -253,7 +258,7 @@ window.SceneMascots = (() => {
         x = g.stand.x; y = g.stand.y;
         ps = { armL: 20, armR: lerp(35, 120, r) }; cls = r >= 1 ? "is-tending" : "";
       }
-      y += w.stageY;
+      home(p >= 0.86);
       place(ball, x, y);
       B.body.style.transform = flip ? "scaleX(-1)" : "none";
       B.limbs.style.opacity = 1;
@@ -262,7 +267,7 @@ window.SceneMascots = (() => {
       mode(cls);
     }
 
-    function renderReduced(p, w) {
+    function renderReduced(p) {
       // No running, flying or swinging: still poses that fade between spots.
       const g = G;
       const spots = [
@@ -270,9 +275,10 @@ window.SceneMascots = (() => {
         { o: seg(p, 0.27, 0.31) * (1 - seg(p, 0.36, 0.4)), at: g.point, flip: !g.phone, ps: g.phone ? { armL: 20, armR: 40 } : { armL: 20, armR: 100 } },
         { o: seg(p, 0.52, 0.56) * (1 - seg(p, 0.57, 0.59)), at: g.side, ps: { armL: 15, armR: 15 } },
         { o: seg(p, 0.6, 0.63) * (1 - seg(p, 0.73, 0.77)), at: g.sit, ps: { armL: 20, armR: 20 } },
-        { o: seg(p, 0.86, 0.9), at: { x: g.stand.x, y: g.stand.y + w.stageY }, ps: { armL: 20, armR: 120 } }
+        { o: seg(p, 0.86, 0.9), at: g.stand, ps: { armL: 20, armR: 120 } }
       ];
       const sp = spots.reduce((a, b) => (b.o > a.o ? b : a));
+      home(sp === spots[spots.length - 1]);
       place(ball, sp.at.x, sp.at.y);
       B.body.style.transform = sp.flip ? "scaleX(-1)" : "none";
       B.limbs.style.opacity = 1;
@@ -288,11 +294,10 @@ window.SceneMascots = (() => {
       pose(T, { armL: 25, armR: 25 });
     }
 
-    // w: { stageY (how far the stage has scrolled up after the scene) }
-    function render(p, ang, lift, w = { stageY: 0 }) {
+    function render(p, ang, lift) {
       if (!G) return;
-      lastArgs = [p, ang, lift, w];
-      if (reduce.matches) { if (state !== "ready") reset(); renderReduced(p, w); return; }
+      lastArgs = [p, ang, lift];
+      if (reduce.matches) { if (state !== "ready") reset(); renderReduced(p); return; }
       bat.style.opacity = "";
       if (state === "hit") {
         // Scrolled far either way while the hit plays: drop the clock and let scroll place the ball.
@@ -306,7 +311,8 @@ window.SceneMascots = (() => {
         if (p < 0.7) { hit(); return; }
         state = "landed";                                        // arrived here in one jump: no hit to watch
       }
-      if (state === "landed") { after(p, w); return; }
+      if (state === "landed") { after(p); return; }
+      home(false);
       ball.style.opacity = "";
       mode(p < 0.12 ? "is-sitting" : "");
 

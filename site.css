@@ -200,6 +200,7 @@ a { color: inherit; }
 .mascot svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .45)); }
 /* The ball is fixed to the screen so it can follow the page past the scene (under the nav). */
 .mascot--ball { position: fixed; z-index: 4; }
+.mascot--ball.is-staged { position: absolute; }
 .mascot--bat { visibility: hidden; }
 .mascot--flag svg { filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .35)); }
 .mascot--burst { opacity: 0; }
