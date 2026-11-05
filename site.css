@@ -118,12 +118,23 @@ a { color: inherit; }
 
 /* ---------- the card (intro and student beats) ---------- */
 .wm { position: absolute; inset: 0; pointer-events: none; }
-.wm__word {
-  position: absolute; left: -2vw; top: 50%; translate: 0 -50%;
-  font: 800 clamp(140px, 24vw, 360px)/.8 var(--font-display); letter-spacing: -.06em; text-transform: uppercase; white-space: nowrap;
-  color: transparent; -webkit-text-stroke: 2px rgba(238, 241, 245, .14);
+/* Baseball field lines: home plate near the bottom, the fence arcing over the top. site.js drifts and fades it with scroll. */
+.wm { overflow: hidden; }
+.wm__field {
+  position: absolute; left: 50%; bottom: 0; height: 104vh; width: auto; translate: -50% 0; transform-origin: 50% 80%;
+  stroke: rgba(238, 241, 245, .14); stroke-width: 1.2; stroke-linejoin: round;
+  animation: enter-fade .6s var(--ease) .3s backwards;
 }
-.wm__word + .wm__word { opacity: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  /* The lines draw themselves in once on first load: foul lines, fence, base paths, then the infield details. */
+  .wm__field path { stroke-dasharray: 1; animation: field-draw 1.2s var(--ease) backwards; }
+  .wm__field path:nth-child(1) { animation-delay: .3s; }
+  .wm__field path:nth-child(2) { animation-delay: .45s; }
+  .wm__field path:nth-child(3) { animation-delay: .6s; }
+  .wm__field path:nth-child(n+4) { animation-delay: .75s; }
+  .wm__field path:last-child { stroke-dasharray: none; animation: enter-fade .6s var(--ease) .9s backwards; }
+}
+@keyframes field-draw { from { stroke-dashoffset: 1; } }
 
 /* Sized and placed by site.js (left, top, width, height). Inside, sizes are in cqw so the card scales as one piece. */
 .tcard { position: absolute; left: 0; top: 0; width: 0; height: 0; perspective: 1800px; container-type: inline-size; }
@@ -369,7 +380,7 @@ a.card.is-strike { border-color: var(--accent); }
   .panel { left: 16px; right: 16px; width: auto; top: auto; bottom: 28px; transform: none; }
   .panel--intro { bottom: 24px; }
   .panel h1 { font-size: clamp(48px, 14vw, 64px); }
-  .wm__word { top: 30%; font-size: 150px; -webkit-text-stroke-width: 1.5px; }
+  .wm__field { bottom: auto; top: -4vh; height: auto; width: 260vw; }
   .panel h2 { font-size: 30px; }
   .panel p { margin-top: 12px; font-size: 15px; }
   .panel .role { margin-top: 14px; font-size: 13px; }

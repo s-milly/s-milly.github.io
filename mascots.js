@@ -90,7 +90,8 @@ window.SceneMascots = (() => {
       const fs = 0.85;                                      // the ball is a little smaller in flight
       G = {
         s, h, bs, bh, W, H, phone, card, bat: spot, fs,
-        rest: { x: card.x - s * 0.55, y: card.y + card.h - h * 1.9 },   // sitting on the card's left edge
+        // Sitting on the card's top edge near the left corner, legs over the front.
+        rest: { x: card.x + card.w * 0.1, y: card.y - s * 0.76 },
         // On phones the student line sits under the card, so the ball points at it from the left margin.
         pushY: card.y + card.h * (phone ? 0.6 : 0.45) - h / 2,
         point: phone ? { x: 18, y: head.t - h - 4 } : { x: para.r + 8, y: para.t - h * 0.25 },
@@ -201,9 +202,9 @@ window.SceneMascots = (() => {
       const pushStart = { x: edgeX(0, 1) - g.s * 0.92, y: g.pushY };
       const REL = 0.202, relAng = 60;                            // lets go once the card is 60 degrees round
       if (p < 0.16) {
-        // Hop down beside the card's left edge.
+        // Hop off the top edge and drop down beside the card's left edge: out to the side first, then falling.
         const t = seg(p, 0.12, 0.16);
-        x = lerp(g.rest.x, pushStart.x, t); y = lerp(g.rest.y, pushStart.y, t) - Math.sin(Math.PI * t) * g.h * 0.6;
+        x = lerp(g.rest.x, pushStart.x, 1 - (1 - t) * (1 - t)); y = lerp(g.rest.y, pushStart.y, t * t) - Math.sin(Math.PI * t) * g.h * 0.5;
         if (t > 0) ps = { armL: 40, armR: 40, ...run(t * 14) };
       } else if (p < REL) {
         // Push the edge round: the ball follows the edge as it swings away.

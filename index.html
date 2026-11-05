@@ -33,8 +33,18 @@
     <!-- One continuous scene: intro, student, baseball, golf -->
     <section class="scene" id="about" aria-label="About Shawn">
       <div class="stage">
-        <!-- Large outlined word behind the card: MILLER on the intro, STUDENT on the student beat -->
-        <div class="wm" aria-hidden="true"><span class="wm__word">Miller</span><span class="wm__word">Student</span></div>
+        <!-- Faint white baseball field lines behind the intro and student beats -->
+        <div class="wm" aria-hidden="true">
+          <svg class="wm__field" viewBox="100 -100 800 720" fill="none">
+            <path pathLength="1" d="M111.1 191.1 L500 580 L888.9 191.1"/>
+            <path pathLength="1" d="M111.1 191.1 A411.1 411.1 0 0 1 888.9 191.1"/>
+            <path pathLength="1" d="M500 580 L606.1 473.9 L500 367.9 L393.9 473.9 Z"/>
+            <path pathLength="1" d="M349.6 429.6 A158.3 158.3 0 0 1 650.4 429.6"/>
+            <path pathLength="1" d="M485 479.2 a15 15 0 1 0 30 0 a15 15 0 1 0 -30 0"/>
+            <path pathLength="1" d="M478.3 580 a21.7 21.7 0 1 0 43.4 0 a21.7 21.7 0 1 0 -43.4 0"/>
+            <path d="M606.1 469.6 l4.3 4.3 l-4.3 4.3 l-4.3 -4.3 Z M500 363.5 l4.3 4.3 l-4.3 4.3 l-4.3 -4.3 Z M393.9 469.6 l4.3 4.3 l-4.3 4.3 l-4.3 -4.3 Z M491.3 575 h6.7 v10 h-6.7 Z M502 575 h6.7 v10 h-6.7 Z"/>
+          </svg>
+        </div>
 
         <div class="window" aria-hidden="true">
           <div class="plate plate--field">

@@ -18,7 +18,7 @@
   const cardInner = card.querySelector(".tcard__inner");
   const cardBack = card.querySelector(".tcard__back");
   const cardImg = card.querySelector(".tcard__photo img");
-  const [wmMiller, wmStudent] = scene.querySelectorAll(".wm__word");
+  const lines = scene.querySelector(".wm__field");
   const introPanel = scene.querySelector(".panel--intro");
   const studentPanel = scene.querySelector(".panel--student");
   const mascots = window.SceneMascots ? SceneMascots.create(scene.querySelector(".stage"), reduce) : null;
@@ -104,8 +104,9 @@
     const gone = seg(p, 0.42, 0.44);
     card.style.opacity = 1 - gone;
     card.style.visibility = gone >= 1 ? "hidden" : "visible";
-    wmMiller.style.opacity = 1 - seg(p, 0.12, 0.18);
-    wmStudent.style.opacity = seg(p, 0.2, 0.27) * (1 - seg(p, 0.35, 0.41));
+    // The field lines stay through the intro and student beats, easing closer as you scroll, and fade before the merge.
+    lines.style.opacity = 1 - seg(p, 0.35, 0.41);
+    lines.style.transform = reduce.matches ? "none" : `scale(${(1 + 0.1 * seg(p, 0, 0.41)).toFixed(4)})`;
 
     // Whole pixels: a fractional clip edge anti-aliases differently per GPU tile and shows as a 1px step.
     const px = (v, s) => Math.round(v * s / 100);
