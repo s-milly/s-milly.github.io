@@ -354,12 +354,17 @@ a.card.is-strike { border-color: var(--accent); }
 }
 
 /* ---------- skills ---------- */
-/* Three plain columns, one per résumé group: a gold label, then a logo and a name per line. */
+/* Three plain columns, one per résumé group: a gold label, then a logo and a name per line. On wide screens the heading sits to their left. */
 .skills { padding: 0 var(--gutter) clamp(110px, 16vh, 180px); position: relative; z-index: 1; background: var(--canvas); }
 .skills h2 { font-size: clamp(44px, 6vw, 88px); line-height: .95; margin: 0 0 48px; }
 .skills__cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; padding-top: 32px; border-top: 1px solid var(--line); }
 .skills__col h3 { margin: 0 0 14px; color: var(--accent); font: 600 13px/1.2 var(--font-text); letter-spacing: .12em; text-transform: uppercase; }
 .skills__col ul { list-style: none; margin: 0; padding: 0; }
+@media (min-width: 1100px) {
+  .skills { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 3fr); gap: 40px; align-items: start; padding-top: clamp(40px, 6vh, 72px); }
+  .skills h2 { margin: 0; }
+  .skills__cols { border-top: 0; padding-top: 12px; }
+}
 .skill { display: flex; align-items: center; gap: 12px; padding: 7px 0; color: var(--ink); font: 500 17px/1.3 var(--font-text); }
 .skill svg { width: 22px; height: 22px; fill: currentColor; flex: none; color: var(--ink-soft); }
 .skill svg.glyph { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
