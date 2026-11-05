@@ -35,14 +35,22 @@
   let REG = { box: [10, 10, 10, 60], photo: [10, 10, 10, 60], r: 9, tx: 0, ty: 0 };
   /* Where the photo window settles after the merge: a rounded frame with the dark page
      around it, not full bleed. [top, right, bottom, left] insets in % of the stage, corner
-     radius in px, and tx/ty offset the field (% of stage) so Shawn's cap stays in frame.
+     radius in px, tx/ty offset the field (% of stage) so Shawn is centred in the frame,
+     and z is the field's scale there (below 1 shows more of the field around him).
      Desktop: right of the text, inside the nav gutter. Phone: above the text. */
-  let END = { box: [11, 6, 9, 48], r: 22, tx: 13, ty: 7 };
+  let END = { box: [11, 6, 9, 48], r: 22, tx: 13, ty: 7, z: 0.8 };
+  let fieldOrigin = [0, 0], fieldBox = [0, 0];
   function measureEnd() {
     const W = stageW;
     END = phone.matches
-      ? { box: [9, 16 / W * 100, 26, 16 / W * 100], r: 18, tx: 0, ty: 0 }
-      : { box: [11, clamp(W * 0.06, 16, 96) / W * 100, 9, 48], r: 22, tx: 13, ty: 7 };
+      ? { box: [9, 16 / W * 100, 26, 16 / W * 100], r: 18, tx: 0, ty: 0, z: 0.8 }
+      : { box: [11, clamp(W * 0.06, 16, 96) / W * 100, 9, 48], r: 22, tx: 13, ty: 7, z: 0.8 };
+    // Phone: the field plate is widened to the photo's own shape (600 x 1000), centred,
+    // so zooming out shows more of the photo instead of the page behind it.
+    const extra = phone.matches ? Math.max(0, (stageH * 0.6 - W) / 2) : 0;
+    field.style.left = field.style.right = extra ? -extra + "px" : "";
+    fieldBox = [field.offsetLeft, field.offsetWidth];
+    fieldOrigin = getComputedStyle(field).transformOrigin.split(" ").map(parseFloat);
     // Desktop: the golf photo is sized to the frame itself (2px over, so rounding never
     // shows the field behind it at an edge). On phones it stays stage-sized and the frame crops it.
     const [t, r, b, l] = END.box;
@@ -154,9 +162,14 @@
     suit.style.opacity = (1 - fade) * Math.max(0.02, front);
     suit.style.visibility = fade >= 1 ? "hidden" : "visible";
     suit.style.transform = reduce.matches ? "none" : `translateY(${-9 * seg(p, 0.42, 0.53)}%) scale(${lerp(1, 1.18, seg(p, 0.42, 0.53))})`;
-    const zoom = reduce.matches ? 1 : lerp(1.45, 1, seg(p, 0.42, 0.6));
+    const zoom = reduce.matches ? END.z : lerp(1.45, END.z, seg(p, 0.42, 0.6));
     const push = reduce.matches ? 1 : lerp(1, 1.06, seg(p, 0.6, 0.84));
-    field.style.transform = `translate3d(${f.tx}%, ${f.ty}%, 0) scale(${zoom * push})`;
+    // Below scale 1 the field is smaller than the stage, so keep its edges outside the
+    // window: the offset is clamped so the photo always covers the frame.
+    const zs = zoom * push, [ox, oy] = fieldOrigin, [fl, fw] = fieldBox;
+    const fx = clamp(f.tx * stageW / 100, stageW - ir - fl - ox - (fw - ox) * zs, il - fl - ox * (1 - zs));
+    const fy = clamp(f.ty * stageH / 100, stageH - ib - oy - (stageH - oy) * zs, it - oy * (1 - zs));
+    field.style.transform = `translate3d(${fx}px, ${fy}px, 0) scale(${zs})`;
     // Kept faint (not hidden) behind the headshot: edge anti-aliasing would otherwise
     // leak a sliver of it, and fully hidden layers repaint in pieces on iOS.
     field.style.opacity = lerp(0.02, 1, seg(p, 0.41, 0.45));
@@ -207,11 +220,11 @@
   }
 
   /* Golf framing (desktop): zoom the photo so the frame holds the part that matters,
-     from just above Shawn's cap down past the cup, and from the white ball rolling
-     toward the cup across to the friend crouching on the right. Never smaller than a
+     from just above Shawn's cap down past the cup, and from the cup across to Shawn,
+     so the friend crouching on the right stays out of it. Never smaller than a
      cover fit. Fractions of the desktop golf image (1170 x 1300). Phones keep the CSS crop. */
   const golfImg = golf.querySelector("img");
-  const GOLF = { x0: 380 / 1170, x1: 1, y0: 520 / 1300, y1: 1180 / 1300 };
+  const GOLF = { x0: 300 / 1170, x1: 880 / 1170, y0: 520 / 1300, y1: 1200 / 1300 };
   function frameGolf() {
     const st = golfImg.style;
     if (phone.matches || !golfImg.naturalWidth) { st.left = st.top = st.width = st.height = ""; return; }
