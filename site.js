@@ -21,7 +21,8 @@
   const lines = scene.querySelector(".wm__grid");
   const introPanel = scene.querySelector(".panel--intro");
   const studentPanel = scene.querySelector(".panel--student");
-  const mascots = window.SceneMascots ? SceneMascots.create(scene.querySelector(".stage"), reduce) : null;
+  const basePanel = scene.querySelector(".panel--baseball");
+  const mascots = window.SceneMascots ? SceneMascots.create(scene.querySelector(".stage"), reduce, { golf }) : null;
   const panels = [...scene.querySelectorAll("[data-panel]")].map(el => ({
     el, k: el.dataset.panel.split(",").map(Number)
   }));
@@ -92,7 +93,7 @@
       left: -W * 0.01 + "px", top: -H * 0.01 + "px",
       width: pw + W * 0.02 + "px", height: ph + H * 0.02 + "px"
     });
-    if (mascots) mascots.measure({ card: { x, y, w, h }, W, H, phone: phone.matches, studentPanel });
+    if (mascots) mascots.measure({ card: { x, y, w, h }, W, H, phone: phone.matches, studentPanel, basePanel });
   }
 
   function frameAt(p) {
@@ -132,7 +133,7 @@
         t += ch * (1 - sy) / 2; b += ch * (1 - sy) / 2;
       }
     }
-    if (mascots) mascots.render(p, ang, 1 + 0.04 * Math.sin(Math.PI * flipTo));
+    cardAng = ang; cardLift = 1 + 0.04 * Math.sin(Math.PI * flipTo);
     const gone = seg(p, 0.42, 0.44);
     card.style.opacity = 1 - gone;
     card.style.visibility = gone >= 1 ? "hidden" : "visible";
@@ -188,12 +189,16 @@
     }
   }
 
-  let target = 0, current = 0, last = -1, prev = 0;
+  let target = 0, current = 0, last = -1, prev = 0, cardAng = 0, cardLift = 1, mLast = "";
   // Scene geometry, measured on load and resize rather than every frame.
-  let sceneTop = 0, total = 1, stageW = 1, stageH = 1;
+  let sceneTop = 0, sceneH = 1, total = 1, stageW = 1, stageH = 1;
+  // The experience timeline, for the ball that hangs from the tip of its gold line: page top, height,
+  // and the line's x on screen. Kept by the timeline code below whenever it reads the timeline's box.
+  let tlGeo = null;
   function measureScene() {
     stageW = win.clientWidth; stageH = win.clientHeight;
     sceneTop = scene.getBoundingClientRect().top + scrollY;
+    sceneH = scene.offsetHeight;
     // The last --hold vh of the scene keeps progress at 1, holding the golf beat in place.
     const hold = (parseFloat(getComputedStyle(scene).getPropertyValue("--hold")) || 0) * innerHeight / 100;
     total = Math.max(1, scene.offsetHeight - innerHeight - hold);
@@ -201,6 +206,21 @@
   // Progress follows scroll at one pace for the whole scene. site.css sets the scene height
   // so every beat gets the slower pace the card and student beats used to have.
   function readScroll() { target = clamp((scrollY - sceneTop) / total); }
+  // After the scene the stage scrolls up with the page; the ball leaps from the golf green to the
+  // tip of the timeline's gold line (hand 0..1), reached as the timeline's top comes up to 80% of the screen.
+  function mascotWorld() {
+    const end = sceneTop + sceneH - stageH;          // scroll position where the stage stops being pinned
+    const u = Math.max(0, scrollY - end);
+    let tip = null, hand = 0;
+    if (tlGeo) {
+      const top = tlGeo.top - scrollY;
+      // The same fill as the timeline code: its tip runs 10px in from each end, level with 72% of the screen.
+      const f = reduce.matches ? 1 : clamp((innerHeight * 0.72 - top) / tlGeo.h);
+      tip = { x: tlGeo.x, y: top + 10 + f * (tlGeo.h - 20) };
+      hand = clamp(u / Math.max(1, tlGeo.top - end - innerHeight * 0.8));
+    }
+    return { stageY: -u, hand, tip };
+  }
   function tick(time) {
     readScroll();
     // Catch-up rate is set per 60Hz frame and scaled by elapsed time, so the scene
@@ -212,6 +232,10 @@
     current += (target - current) * k;
     if (Math.abs(target - current) < 0.0004) current = target;
     if (current !== last) { render(current); last = current; }
+    if (mascots) {
+      const key = current + "|" + scrollY;
+      if (key !== mLast) { mascots.render(current, cardAng, cardLift, mascotWorld()); mLast = key; }
+    }
     requestAnimationFrame(tick);
   }
 
@@ -234,7 +258,7 @@
       left: clamp(W / 2 - cx, W - iw * s, 0) + "px", top: clamp(H / 2 - cy, H - ih * s, 0) + "px"
     });
   }
-  golfImg.addEventListener("load", frameGolf);
+  golfImg.addEventListener("load", () => remeasure());
   if (golfImg.complete) frameGolf();
 
   /* ---------------- nav ---------------- */
@@ -428,7 +452,9 @@
         if (open) requestAnimationFrame(update);
       });
     });
+    const keep = r => { tlGeo = { top: r.top + scrollY, h: tl.offsetHeight, x: r.left + fill.offsetLeft + 1 }; };
     const update = () => {
+      keep(tl.getBoundingClientRect());
       if (reduce.matches) {
         tl.classList.remove("is-armed"); fill.style.transform = "scaleY(1)";
         for (const it of items) it.classList.add("is-lit");
@@ -449,7 +475,7 @@
   }
 
   /* ---------------- boot ---------------- */
-  const remeasure = () => { measureScene(); measureEnd(); measureCard(); frameGolf(); last = -1; markCheck(); };
+  const remeasure = () => { measureScene(); measureEnd(); frameGolf(); measureCard(); last = -1; mLast = ""; markCheck(); };
   measureScene(); measureEnd(); measureCard();
   addEventListener("resize", remeasure);
   phone.addEventListener("change", remeasure);

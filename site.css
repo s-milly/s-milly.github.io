@@ -198,7 +198,10 @@ a { color: inherit; }
 /* ---------- scene mascots (built and moved by mascots.js) ---------- */
 .mascot { position: absolute; left: 0; top: 0; width: var(--s, 64px); pointer-events: none; will-change: transform; }
 .mascot svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .45)); }
+/* The ball is fixed to the screen so it can follow the page past the scene (under the nav). */
+.mascot--ball { position: fixed; z-index: 4; }
 .mascot--bat { visibility: hidden; }
+.mascot--flag svg { filter: drop-shadow(0 2px 3px rgba(0, 0, 0, .35)); }
 .mascot--burst { opacity: 0; }
 .mascot--burst svg { filter: none; }
 @media (prefers-reduced-motion: no-preference) {
@@ -207,9 +210,24 @@ a { color: inherit; }
   .mascot--bat .m-eyes { animation-delay: -2.1s; }
   .mascot.is-sitting .m-leg { animation: m-swing .9s ease-in-out infinite alternate; }
   .mascot.is-sitting .m-leg--r { animation-delay: -.45s; }
+  /* Tending the flag: the free hand waves now and then, and the flag stirs. */
+  .mascot.is-tending .m-arm--r { animation: m-wave 4s ease-in-out infinite; }
+  .m-flag { transform-box: fill-box; transform-origin: 0 50%; animation: m-flutter 1.8s ease-in-out infinite alternate; }
+  /* Hanging from the gold line: a slow swing from the hand, legs kicking a little. */
+  .mascot.is-hanging .mascot__body { transform-origin: 77% 38%; animation: m-sway 3.2s infinite; }
+  .mascot.is-hanging .m-leg { animation: m-swing 1.6s ease-in-out infinite alternate; }
+  .mascot.is-hanging .m-leg--r { animation-delay: -.8s; }
 }
 @keyframes m-blink { 0%, 95%, 100% { scale: 1 1; } 97% { scale: 1 .1; } }
 @keyframes m-swing { from { rotate: -12deg; } to { rotate: 12deg; } }
+@keyframes m-wave { 0%, 70%, 100% { rotate: 0deg; } 77%, 91% { rotate: -35deg; } 84% { rotate: -12deg; } }
+@keyframes m-flutter { from { scale: 1 1; } to { scale: .88 1.06; } }
+/* A pendulum from rest: fastest through the middle, slowing at each end (ease-out-cubic out, ease-in-cubic back). */
+@keyframes m-sway {
+  0%, 50%, 100% { rotate: 0deg; animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1); }
+  25% { rotate: 4deg; animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0); }
+  75% { rotate: -4deg; animation-timing-function: cubic-bezier(0.32, 0, 0.67, 0); }
+}
 
 /* First-load entrance for the intro: name, then title line and lede, then buttons, then the photo, 100ms apart. Runs once; "backwards" so no filter lingers afterwards. */
 @keyframes enter { from { opacity: 0; translate: 0 12px; filter: blur(4px); } }
@@ -406,7 +424,8 @@ a.card.is-strike { border-color: var(--accent); }
   .ph { object-position: 52% 30%; }
   .plate--field { transform-origin: 52% 16%; }
   .plate--suit .ph { object-position: 50% 30%; }
-  .plate--golf .ph { object-position: 50% 50%; }
+  /* Left of centre so the cup shows (the mascot tends the flag there); Shawn stays in frame. */
+  .plate--golf .ph { object-position: 22% 50%; }
   .panel { left: 16px; right: 16px; width: auto; top: auto; bottom: 28px; transform: none; }
   .panel--intro { bottom: 24px; }
   .panel h1 { font-size: clamp(48px, 14vw, 64px); }
