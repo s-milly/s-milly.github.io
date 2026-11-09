@@ -17,7 +17,7 @@ window.SITE = {
   projects: [
     {
       name: "shelf-signal",
-      title: "Shelf Signal",
+      title: "How Much Should a Store Order?",
       description: "A monthly order sheet that stocks each product by what a mistake costs. Tested on 12 months of Walmart sales, it cut lost profit plus overstock from $253K to $109K.",
       url: "https://github.com/s-milly/shelf-signal",
       language: "Python",
@@ -25,7 +25,7 @@ window.SITE = {
     },
     {
       name: "review-signal",
-      title: "Review Signal",
+      title: "Can Yelp Reviews Spot Closing Restaurants?",
       description: "Tested whether 552,940 Yelp reviews could forecast restaurant traffic. They could not, so the product changed: reviews now flag closure risk, and 9 of the 20 riskiest restaurants closed.",
       url: "https://github.com/s-milly/review-signal",
       language: "Python",
