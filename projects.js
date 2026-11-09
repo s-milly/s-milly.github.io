@@ -43,7 +43,7 @@ window.SITE = {
       name: "pokemon-safari-zone",
       title: "Pokémon Quiet Safari",
       description: "A classroom volume game which rewards staying silent while working. While the room stays quiet, Pokémon from Red and Blue will appear across 12 different habitats. Get too loud and they run away.",
-      url: "https://s-milly.github.io/pokemon-safari-zone/",
+      url: "https://pokemon-safari-zone-xi.vercel.app/",
       language: "JavaScript",
       cta: "Play it →"
     },
