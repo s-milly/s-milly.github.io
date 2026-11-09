@@ -12,9 +12,25 @@
 */
 window.SITE = {
   githubUser: "s-milly",
-  featured: ["music-composer", "four-fronts", "pitch-identifier", "super-bowl-defense", "pgh-bridges-bus"],
+  featured: ["music-composer", "shelf-signal", "review-signal", "four-fronts", "pitch-identifier", "super-bowl-defense", "pgh-bridges-bus"],
   hide: [],
   projects: [
+    {
+      name: "shelf-signal",
+      title: "Shelf Signal",
+      description: "A monthly order sheet that stocks each product by what a mistake costs. Tested on 12 months of Walmart sales, it cut lost profit plus overstock from $253K to $109K.",
+      url: "https://github.com/s-milly/shelf-signal",
+      language: "Python",
+      cta: "Read the case study →"
+    },
+    {
+      name: "review-signal",
+      title: "Review Signal",
+      description: "Tested whether 552,940 Yelp reviews could forecast restaurant traffic. They could not, so the product changed: reviews now flag closure risk, and 9 of the 20 riskiest restaurants closed.",
+      url: "https://github.com/s-milly/review-signal",
+      language: "Python",
+      cta: "Read the case study →"
+    },
     {
       name: "music-composer",
       title: "Music Composer",
