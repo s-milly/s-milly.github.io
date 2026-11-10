@@ -323,6 +323,13 @@ a.card:focus-visible::before { opacity: 1; transform: scale(1); }
 .card__stats span:last-child { margin-left: auto; color: var(--ink); }
 .card p + .card__stats { margin-top: auto; }
 .card__body { flex: 1; margin-bottom: 22px; }
+/* Project picture: full width across the top of the card, inside its border. */
+.card__shot {
+  margin: -26px -26px 22px; aspect-ratio: 16 / 10; overflow: hidden;
+  border-radius: calc(var(--radius) - 1px) calc(var(--radius) - 1px) 0 0;
+  border-bottom: 1px solid var(--line); background: var(--surface-2);
+}
+.card__shot img { display: block; width: 100%; height: 100%; object-fit: cover; transition: scale .4s var(--ease); }
 
 .card--empty { border-style: dashed; background: transparent; justify-content: center; align-items: flex-start; }
 .card--empty h3 { color: var(--ink-soft); margin-top: 0; }
@@ -372,6 +379,7 @@ a.card.is-strike { border-color: var(--accent); }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .btn:hover { transform: translateY(-2px); }
   a.card:hover { translate: 0 -4px; }
+  a.card:hover .card__shot img { scale: 1.03; }
 }
 @media (prefers-reduced-motion: reduce) {
   a.card::before { transform: none; }

@@ -304,6 +304,7 @@
     ].join("");
     return `<li><a class="card" href="${esc(p.url)}" target="_blank" rel="noopener" data-pitch>
       <span class="card__stamp" aria-hidden="true">Strike</span>
+      ${p.image ? `<div class="card__shot"><img src="${esc(p.image)}" alt="" width="960" height="600" loading="lazy" decoding="async"></div>` : ""}
       <div class="card__body">
         ${p.language ? `<div class="card__lang"><i></i>${esc(p.language)}</div>` : ""}
         <h3>${esc(p.title || pretty(p.name))}</h3>
